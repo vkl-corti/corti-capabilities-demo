@@ -44,7 +44,7 @@ export default function App() {
       <header className="sticky top-0 z-30 border-b border-corti-border-faint bg-corti-bg-primary/85 backdrop-blur">
         <div className="cd-shell flex h-14 items-center justify-between px-8">
           <button type="button" onClick={reset} className="flex items-center gap-3" title="Back to the library">
-            <img src="/corti-logo-white.svg" alt="Corti" className="h-[18px] w-auto" />
+            <img src={`${import.meta.env.BASE_URL}corti-logo-white.svg`} alt="Corti" className="h-[18px] w-auto" />
             <span className="h-4 w-px bg-corti-border-tree" />
             <span className="cd-eyebrow">Capability library</span>
           </button>

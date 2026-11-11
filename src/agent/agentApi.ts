@@ -6,7 +6,11 @@ import type { AgentMode, ComposeResult, ComposerResponse } from "../types";
 
 const MOCK_LATENCY_MS = 1200;
 
+/** Static hosting (GitHub Pages) has no backend → always mock, no failing /api requests. */
+const STATIC_BUILD = import.meta.env.VITE_STATIC === "1";
+
 export async function getAgentMode(): Promise<AgentMode> {
+  if (STATIC_BUILD) return "mock";
   try {
     const res = await fetch("/api/corti/status");
     if (!res.ok) return "mock";
