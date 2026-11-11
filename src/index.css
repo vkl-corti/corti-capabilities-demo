@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Booton — corti.ai's brand sans (headings + body). Self-hosted copy. */
+@font-face {
+  font-family: Booton;
+  src: url(/fonts/BootonUprightVF.woff2) format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-corti-bg-primary font-sans text-[15px] leading-[1.6] text-corti-text-primary antialiased;
+}
+
+@layer components {
+  /* ——— Page shell: centred 80rem column with hairline rails, corti.ai style ——— */
+  .cd-shell {
+    @apply mx-auto w-full max-w-page border-x border-corti-border-faint;
+  }
+  .cd-rule {
+    @apply border-b border-corti-border-faint;
+  }
+  /* dotted texture used on corti.ai's media panels */
+  .cd-dotted {
+    background-image: radial-gradient(circle, #ffffff14 1px, transparent 1.2px);
+    background-size: 16px 16px;
+  }
+
+  /* ——— Type ——— */
+  .cd-h1 {
+    @apply font-sans text-[40px] font-heading leading-[1.1] tracking-heading text-corti-text-primary xl:text-[48px];
+    text-wrap: balance;
+  }
+  .cd-h2 {
+    @apply font-sans text-[24px] font-heading leading-[1.2] tracking-heading text-corti-text-primary;
+  }
+  .cd-lede {
+    @apply font-sans text-[17px] leading-[1.6] text-corti-text-secondary;
+  }
+  .cd-eyebrow {
+    @apply font-mono text-[12px] font-medium uppercase tracking-mono text-corti-text-secondary;
+  }
+  .cd-tag {
+    @apply font-mono text-[11px] font-medium uppercase tracking-mono text-corti-text-tertiary;
+  }
+
+  /* ——— Surfaces ——— */
+  .cd-card {
+    @apply rounded-lg border border-corti-border-faint bg-corti-bg-card;
+  }
+
+  /* ——— Buttons (corti.ai .btn: 40px, radius-md, Booton 500) ——— */
+  .cd-btn,
+  .cd-btn-primary,
+  .cd-btn-ghost {
+    @apply inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md px-3 font-sans text-[15px] font-medium leading-none transition-colors duration-100;
+  }
+  .cd-btn {
+    @apply border border-corti-border-strong bg-corti-bg-primary text-corti-text-primary hover:bg-corti-bg-tertiary;
+  }
+  .cd-btn-primary {
+    @apply border border-corti-text-primary bg-corti-text-primary text-black hover:border-[#dcdcdc] hover:bg-[#dcdcdc];
+  }
+  .cd-btn-primary:disabled {
+    @apply pointer-events-none opacity-50;
+  }
+  .cd-btn-ghost {
+    @apply border border-transparent text-corti-text-secondary hover:bg-white/5 hover:text-corti-text-primary;
+  }
+  .cd-btn-sm {
+    @apply h-8 px-2.5 text-[13px];
+  }
+  .cd-chip {
+    @apply inline-flex h-8 items-center rounded-full border border-corti-border-faint bg-corti-bg-card px-3 font-sans text-[13px] text-corti-text-secondary transition-colors hover:border-corti-border-strong hover:text-corti-text-primary;
+  }
+
+  .cd-input {
+    @apply h-12 rounded-md border border-corti-border-strong bg-corti-bg-card px-4 font-sans text-[16px] text-corti-text-primary placeholder:text-corti-text-tertiary focus:border-corti-accent focus:outline-none;
+  }
+
+  .cd-accent {
+    @apply text-corti-accent;
+  }
+}
+
+/* ——— Motion ——— */
+@keyframes cd-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.cd-fade-up {
+  animation: cd-fade-up 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes cd-draw {
+  from {
+    stroke-dashoffset: var(--len, 600);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes cd-flow {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+.cd-edge-flow {
+  stroke-dasharray: 6 10;
+  animation: cd-flow 0.6s linear infinite;
+}
+
+@keyframes cd-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.cd-caret {
+  animation: cd-blink 1s step-end infinite;
+}
+
+@keyframes cd-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(184, 248, 24, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(184, 248, 24, 0);
+  }
+}
+.cd-pulse {
+  animation: cd-pulse 2.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-fade-up,
+  .cd-edge-flow,
+  .cd-pulse,
+  .cd-caret {
+    animation: none;
+  }
+}
