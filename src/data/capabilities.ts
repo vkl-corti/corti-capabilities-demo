@@ -9,17 +9,14 @@ import type { Capability, ConnectorRef, Primitive, TrustRef } from "../types";
 // src/agent/composerAgent.ts on every server start and PATCHed onto the live
 // agent, so new capabilities appear without touching any other file.
 //
-// SOURCE OF TRUTH: Notion "‣ Corti AI capabilities" database
-//   https://app.notion.com/p/ab366216641547d3858cbdc9c4e76d83
+// SOURCE OF TRUTH: Corti's internal capability database (Notion).
 // Synced 2026-11-11. Name, category, one-liner (outcome), clinical problem
 // (whenToUse), how it works and primitives used are taken from Notion.
 // Pipeline step wording and keywords are derived from "How it works".
 //
 // All 21 Notion capabilities are here (the composer agent matches against
-// all of them). The library TREE shows the 10 in FEATURED_IDS: the nine
-// agents proposed in "Corti healthcare offering: Getting to ground truth"
-// (pricing table), plus Medication reconciliation (that doc's worked
-// example). The rest appear under "See all capabilities".
+// all of them). The library TREE shows the featured 10 in
+// FEATURED_IDS. The rest appear under "See all capabilities".
 // ————————————————————————————————————————————————
 
 /** Primitives registry — the five build primitives. Notion's "Primitives used"
@@ -62,7 +59,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
 // ——— Shared connectors ———
 const EHR: ConnectorRef = { id: "connector-ehr", name: "EHR", roleInPipeline: "Reads the record and writes reviewed results back" };
 
-// ——— Shared trust layer (from the agent harness in "Getting to ground truth") ———
+// ——— Shared trust layer (deployment + observability) ———
 const DEPLOY: TrustRef = {
   id: "trust-deploy",
   name: "EU / US cloud or on-prem",

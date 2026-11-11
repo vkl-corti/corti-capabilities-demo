@@ -78,17 +78,14 @@ mean position of their primitives to minimise crossings.
 
 ## Source of truth
 
-Capabilities and primitives are synced from the Notion database
-**"‣ Corti AI capabilities"**
-(https://app.notion.com/p/ab366216641547d3858cbdc9c4e76d83), last synced
-2026-11-11. Name, category, one-liner, clinical problem, how it works and
+Capabilities and primitives are synced from Corti's internal capability
+database, last synced 2026-11-11. Name, category, one-liner, clinical problem, how it works and
 primitives used come from Notion; pipeline-step wording and match keywords are
 derived from "How it works".
 
 All 21 Notion capabilities are in the data and the composer agent matches
-against all of them. The library tree shows 10 (`FEATURED_IDS`): the nine
-agents proposed in "Corti healthcare offering: Getting to ground truth", plus
-Medication reconciliation. The rest are under **"See all 21"** (graph header)
+against all of them. The library tree shows a featured 10
+(`FEATURED_IDS`). The rest are under **"See all 21"** (graph header)
 or **"All 21 capabilities"** (top bar) — a filterable list grouped by Notion
 category. Picking one, or an agent match outside the 10, adds it to the tree
 marked "From full list". Primitives are the five build blocks; Notion's
