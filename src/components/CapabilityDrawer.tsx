@@ -11,9 +11,11 @@ interface Props {
   onClose: () => void;
   onSelect: (id: string) => void;
   onShowInMap: (id: string) => void;
+  /** Reasons from the questionnaire, if opened from recommendations. */
+  why?: string[];
 }
 
-export function CapabilityDrawer({ capabilityId, onClose, onSelect, onShowInMap }: Props) {
+export function CapabilityDrawer({ capabilityId, onClose, onSelect, onShowInMap, why }: Props) {
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -48,7 +50,7 @@ export function CapabilityDrawer({ capabilityId, onClose, onSelect, onShowInMap 
           </button>
         </div>
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-5">
-          <DetailPanel capabilityId={capabilityId} onSelect={onSelect} onShowInMap={onShowInMap} />
+          <DetailPanel capabilityId={capabilityId} onSelect={onSelect} onShowInMap={onShowInMap} why={why} />
           {related.length > 0 && (
             <div className="mt-5">
               <p className="cd-tag mb-2">Related</p>

@@ -170,7 +170,10 @@ export interface Match {
   because: string[];
 }
 
-export function scoreAnswers(answers: Answers, limit = 6): Match[] {
+/** Below this a match is filler (e.g. only the broad objective), not a recommendation. */
+const MIN_SCORE = 1.5;
+
+export function scoreAnswers(answers: Answers, limit = 8): Match[] {
   const score = new Map<string, number>();
   const why = new Map<string, { label: string; pts: number }[]>();
   const add = (capId: string, pts: number, label: string) => {
@@ -189,6 +192,7 @@ export function scoreAnswers(answers: Answers, limit = 6): Match[] {
     }
   }
   return [...score.entries()]
+    .filter(([, s]) => s >= MIN_SCORE)
     .sort((a, b) => b[1] - a[1])
     .slice(0, limit)
     .map(([id, s]) => ({

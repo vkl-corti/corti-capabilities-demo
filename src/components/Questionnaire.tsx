@@ -1,20 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
-import { QUESTIONS, scoreAnswers, type Answers } from "../data/questionnaire";
+import { QUESTIONS, scoreAnswers, type Answers, type Match } from "../data/questionnaire";
+import { JOBS } from "../data/capabilities";
 import { ADVANCE_PROGRAM, PRODUCTS } from "../data/products";
-import { DetailPanel } from "./DetailPanel";
 import { LibraryGraph } from "./LibraryGraph";
 
 // Guided recommendations: four quick steps of statements to react to,
-// then the visitor's own tree, ranked, with why each one was picked.
+// then a ranked list of recommendations for inspiration (products and
+// build-with-us), each with why it was picked, and the tree of how they're built.
 
 interface Props {
   /** Switch to free-text + AI composer. */
   onFreeText: () => void;
   /** Called once with the top picks (feeds history / recommendations). */
   onResult: (ids: string[]) => void;
+  /** Open a capability's detail, with the reasons it was recommended. */
+  onOpen: (id: string, why?: string[]) => void;
 }
 
-export function Questionnaire({ onFreeText, onResult }: Props) {
+export function Questionnaire({ onFreeText, onResult, onOpen }: Props) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const done = step >= QUESTIONS.length;
@@ -22,7 +25,7 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
   if (done) return <Result answers={answers} onEdit={() => setStep(0)} onRestart={() => {
           setAnswers({});
           setStep(0);
-        }} onResult={onResult} />;
+        }} onResult={onResult} onOpen={onOpen} />;
 
   const q = QUESTIONS[step];
   const picked = answers[q.id] ?? [];
@@ -127,16 +130,18 @@ function Result({
   onEdit,
   onRestart,
   onResult,
+  onOpen,
 }: {
   answers: Answers;
   onEdit: () => void;
   onRestart: () => void;
   onResult: (ids: string[]) => void;
+  onOpen: (id: string, why?: string[]) => void;
 }) {
-  const matches = useMemo(() => scoreAnswers(answers, 6), [answers]);
+  const matches = useMemo(() => scoreAnswers(answers, 8), [answers]);
   const ids = matches.map((m) => m.capability.id);
-  const [selected, setSelected] = useState<string | null>(ids[0] ?? null);
   const idsKey = ids.join(",");
+  const [hovered, setHovered] = useState<string | null>(null);
 
   useEffect(() => {
     if (idsKey) onResult(idsKey.split(",").slice(0, 3));
@@ -144,9 +149,8 @@ function Result({
   }, [idsKey, onResult]);
 
   const answerChips = QUESTIONS.flatMap((q) => (answers[q.id] ?? []).map((id) => q.options.find((o) => o.id === id)?.label ?? id));
-  const productIds = [...new Set(matches.filter((m) => m.capability.track === "product").map((m) => m.capability.productId!))];
+  const products = matches.filter((m) => m.capability.track === "product");
   const custom = matches.filter((m) => m.capability.track === "custom");
-  const why = matches.find((m) => m.capability.id === selected)?.because;
 
   if (!matches.length) {
     return (
@@ -159,6 +163,55 @@ function Result({
     );
   }
 
+  const card = (m: Match) => {
+    const c = m.capability;
+    const p = c.productId ? PRODUCTS[c.productId] : undefined;
+    return (
+      <li
+        key={c.id}
+        onMouseEnter={() => setHovered(c.id)}
+        onMouseLeave={() => setHovered(null)}
+        className="cd-card group flex flex-col gap-3 p-5 transition-colors hover:border-corti-border-strong"
+      >
+        <div>
+          <div className="mb-1.5 flex items-center gap-2">
+            <span className="cd-tag">{JOBS[c.job].label}</span>
+          </div>
+          <h3 className="font-sans text-[18px] font-medium leading-tight">{c.name}</h3>
+          <p className="mt-1 text-[13.5px] leading-snug text-corti-text-secondary">{c.short}</p>
+        </div>
+        {m.because.length > 0 && (
+          <p className="border-l-2 border-corti-accent/60 pl-3 text-[12.5px] leading-relaxed text-corti-text-tertiary">
+            Because {m.because.join(" and ")}.
+          </p>
+        )}
+        <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
+          {p ? (
+            <a href={p.href} target="_blank" rel="noreferrer" className="cd-btn-primary cd-btn-sm">
+              {p.cta} ↗
+            </a>
+          ) : (
+            <a
+              href={`${ADVANCE_PROGRAM.href}?capability=${encodeURIComponent(c.id)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="cd-btn-ghost cd-btn-sm"
+            >
+              {ADVANCE_PROGRAM.cta} →
+            </a>
+          )}
+          <button
+            type="button"
+            onClick={() => onOpen(c.id, m.because)}
+            className="text-[12.5px] text-corti-text-tertiary underline decoration-dotted underline-offset-4 hover:text-corti-text-primary"
+          >
+            How it works
+          </button>
+        </div>
+      </li>
+    );
+  };
+
   return (
     <>
       <section className="cd-rule px-8 py-8">
@@ -167,7 +220,10 @@ function Result({
             <p className="cd-eyebrow mb-3 flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-corti-accent" /> Your recommendations
             </p>
-            <h1 className="cd-h1 mb-3">Where Corti can help</h1>
+            <h1 className="cd-h1 mb-2">Where Corti can help</h1>
+            <p className="cd-lede mb-4 max-w-[60ch]">
+              {matches.length} capabilities selected from your answers, for inspiration. Explore any of them, or bring them to a conversation with us.
+            </p>
             <div className="flex max-w-[820px] flex-wrap gap-1.5">
               {answerChips.map((c) => (
                 <span key={c} className="rounded-full border border-corti-border-faint px-2.5 py-0.5 text-[12px] text-corti-text-tertiary">
@@ -187,49 +243,36 @@ function Result({
         </div>
       </section>
 
-      <section className="grid gap-6 px-8 py-6 xl:grid-cols-[minmax(0,1fr)_400px]">
-        <div className="min-w-0">
-          <LibraryGraph
-            baseIds={ids}
-            keepOrder
-            highlightedCapId={selected}
-            matchedCapId={ids[0]}
-            onSelectCapability={setSelected}
-            extraCapIds={[selected]}
-          />
-          {/* Next steps */}
-          <div className="mt-8 grid gap-4 rounded-lg border border-corti-border-faint p-6 sm:grid-cols-2">
-            <div>
-              <p className="cd-tag mb-2 !text-corti-accent">Start today</p>
-              {productIds.length ? (
-                <div className="flex flex-wrap gap-2">
-                  {productIds.map((pid) => (
-                    <a key={pid} href={PRODUCTS[pid].href} target="_blank" rel="noreferrer" className="cd-btn-primary cd-btn-sm">
-                      {PRODUCTS[pid].cta} ↗
-                    </a>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-[13px] leading-relaxed text-corti-text-tertiary">
-                  None of these is an off-the-shelf product yet. All are built on the same primitives.
-                </p>
-              )}
-            </div>
-            <div>
-              <p className="cd-tag mb-2">Build the rest with us · {custom.length}</p>
-              <p className="mb-3 text-[13px] leading-relaxed text-corti-text-secondary">{ADVANCE_PROGRAM.pitch}</p>
-              <a
-                href={`${ADVANCE_PROGRAM.href}?capabilities=${encodeURIComponent(custom.map((m) => m.capability.id).join(","))}`}
-                target="_blank"
-                rel="noreferrer"
-                className="cd-btn-ghost cd-btn-sm"
-              >
-                {ADVANCE_PROGRAM.cta} →
-              </a>
-            </div>
+      {products.length > 0 && (
+        <section className="px-8 pt-8">
+          <h2 className="cd-tag mb-3 !text-corti-accent">Available today · {products.length}</h2>
+          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{products.map(card)}</ul>
+        </section>
+      )}
+
+      {custom.length > 0 && (
+        <section className="px-8 pt-8">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
+            <h2 className="cd-tag">Build with us · {custom.length}</h2>
+            <a
+              href={`${ADVANCE_PROGRAM.href}?capabilities=${encodeURIComponent(custom.map((m) => m.capability.id).join(","))}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-[12.5px] text-corti-text-secondary underline decoration-dotted underline-offset-4 hover:text-corti-accent"
+            >
+              Discuss all {custom.length} with us through the {ADVANCE_PROGRAM.name} →
+            </a>
           </div>
-        </div>
-        <div className="xl:pt-[30px]">{selected && <DetailPanel capabilityId={selected} onSelect={setSelected} why={why} />}</div>
+          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{custom.map(card)}</ul>
+        </section>
+      )}
+
+      <section className="px-8 pb-10 pt-12">
+        <p className="cd-eyebrow mb-1">How these are built</p>
+        <p className="mb-5 text-[13.5px] text-corti-text-tertiary">
+          All of your recommendations come from the same primitives. Hover a card above or a capability below to trace it.
+        </p>
+        <LibraryGraph baseIds={ids} keepOrder highlightedCapId={hovered} onSelectCapability={(id) => onOpen(id, matches.find((m) => m.capability.id === id)?.because)} />
       </section>
     </>
   );
