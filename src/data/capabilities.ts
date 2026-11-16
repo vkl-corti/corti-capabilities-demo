@@ -71,11 +71,11 @@ const NOTION_PRIMITIVE: Record<string, string> = {
 
 /** Jobs in catalogue order. `flow` is the design team's import/transform split. */
 export const JOBS: Record<Job, { label: string; verb: string; flow: Flow }> = {
-  capture: { label: "Get it on record", verb: "Conversations, dictation and incoming documents into the record, without typing", flow: "import" },
-  write: { label: "Write it for you", verb: "Letters, forms and replies drafted from the record, ready for your signature", flow: "transform" },
-  check: { label: "Catch what's missing", verb: "Gaps, conflicts and errors spotted before they cause trouble", flow: "transform" },
-  understand: { label: "Find it fast", verb: "Answers and summaries from the record, with the source shown", flow: "transform" },
-  automate: { label: "Handle the admin", verb: "Calls, inbox, worklists and follow-ups taken off your plate", flow: "act" },
+  capture: { label: "Capture & documentation", verb: "Turns consultations, dictation and incoming documents into the record", flow: "import" },
+  write: { label: "Drafting & correspondence", verb: "Letters, forms and patient replies drafted from the record for review", flow: "transform" },
+  check: { label: "Quality & safety checks", verb: "Identifies gaps, conflicts and errors before they reach the record or the claim", flow: "transform" },
+  understand: { label: "Insight & search", verb: "Summaries and answers from the record and guidelines, with sources", flow: "transform" },
+  automate: { label: "Workflow automation", verb: "Calls, inbox, worklists and follow-ups handled end to end", flow: "act" },
 };
 export const JOB_ORDER: Job[] = ["capture", "write", "check", "understand", "automate"];
 
@@ -207,7 +207,7 @@ const EDITORIAL: Record<string, Editorial> = {
   },
   "Consultation interpreter": {
     id: "consultation-interpreter",
-    short: "Talk to any patient, note in your language",
+    short: "Live interpretation, note in the clinician's language",
     job: "capture",
     inputs: ["conversation"],
     keywords: ["translate", "translation", "interpreter", "language", "languages", "foreign", "non-native", "multilingual"],
@@ -310,7 +310,7 @@ const EDITORIAL: Record<string, Editorial> = {
   },
   "Reply drafting in your own style": {
     id: "reply-drafting",
-    short: "Patient replies that sound like you",
+    short: "Patient replies in the clinician's own style",
     job: "write",
     inputs: ["messages", "record"],
     keywords: ["reply", "replies", "e-consultation", "portal message", "patient question", "respond", "message", "writing style"],
@@ -377,7 +377,7 @@ const EDITORIAL: Record<string, Editorial> = {
   },
   "Patient AI conversation review": {
     id: "patient-ai-review",
-    short: "When patients bring ChatGPT's diagnosis",
+    short: "Patients' AI research, checked against the record",
     job: "check",
     inputs: ["patient", "record"],
     keywords: ["chatgpt", "ai chat", "self-diagnosis", "patient research", "dr google", "claims", "talking points"],
@@ -510,7 +510,7 @@ const EDITORIAL: Record<string, Editorial> = {
   },
   "End-of-day catch-up": {
     id: "end-of-day",
-    short: "Go home on time: everything open, ready to sign",
+    short: "All open items, prepared for sign-off",
     job: "automate",
     inputs: ["record"],
     keywords: ["end of day", "after hours", "unsigned notes", "open tasks", "pajama time", "catch up", "sign off", "backlog"],

@@ -4,7 +4,7 @@ import { ADVANCE_PROGRAM, PRODUCTS } from "../data/products";
 import { DetailPanel } from "./DetailPanel";
 import { LibraryGraph } from "./LibraryGraph";
 
-// Guided "find what fits you": four quick steps of statements to react to,
+// Guided recommendations: four quick steps of statements to react to,
 // then the visitor's own tree, ranked, with why each one was picked.
 
 interface Props {
@@ -111,11 +111,11 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
         </div>
 
         <p className="mt-12 text-center text-[13px] text-corti-text-tertiary">
-          Already know what you need?{" "}
+          Already know what you are looking for?{" "}
           <button type="button" onClick={onFreeText} className="text-corti-text-secondary underline decoration-dotted underline-offset-4 hover:text-corti-accent">
             Describe it in your own words
           </button>{" "}
-          and a Corti agent finds it.
+          and a Corti agent will find the right capability.
         </p>
       </div>
     </section>
@@ -151,7 +151,7 @@ function Result({
   if (!matches.length) {
     return (
       <section className="px-8 py-16 text-center">
-        <p className="cd-lede mb-4">Tell us a bit more and we'll find what fits.</p>
+        <p className="cd-lede mb-4">Please answer a few more questions so we can recommend capabilities.</p>
         <button type="button" className="cd-btn-primary" onClick={onRestart}>
           Start again
         </button>
@@ -165,9 +165,9 @@ function Result({
         <div className="cd-fade-up flex flex-wrap items-end justify-between gap-6">
           <div className="min-w-0">
             <p className="cd-eyebrow mb-3 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-corti-accent" /> Picked for you
+              <span className="h-1.5 w-1.5 rounded-full bg-corti-accent" /> Your recommendations
             </p>
-            <h1 className="cd-h1 mb-3">Here's where Corti could help you</h1>
+            <h1 className="cd-h1 mb-3">Where Corti can help</h1>
             <div className="flex max-w-[820px] flex-wrap gap-1.5">
               {answerChips.map((c) => (
                 <span key={c} className="rounded-full border border-corti-border-faint px-2.5 py-0.5 text-[12px] text-corti-text-tertiary">
@@ -211,7 +211,7 @@ function Result({
                 </div>
               ) : (
                 <p className="text-[13px] leading-relaxed text-corti-text-tertiary">
-                  None of your picks is an off-the-shelf product yet. They're all built on the same primitives.
+                  None of these is an off-the-shelf product yet. All are built on the same primitives.
                 </p>
               )}
             </div>

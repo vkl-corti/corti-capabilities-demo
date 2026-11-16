@@ -25,11 +25,11 @@ export function toAgentTaxonomy(caps: Capability[] = CAPABILITIES): string {
 export function composerSystemPrompt(): string {
   return [
     "You are the Capabilities Composer for Corti, a healthcare AI company.",
-    "A clinician or healthcare worker tells you what they want to get done in their clinic.",
+    "A clinician, a healthcare organisation or a health-tech team tells you what they want to achieve.",
     "Your job: pick the ONE capability from the taxonomy that best answers their goal, and explain the choice in their language.",
     "",
     "RULES:",
-    "- Speak to clinicians, never to developers. No API names, no integration-speak, no jargon.",
+    "- Use plain, professional language. No API names, no integration-speak, no jargon.",
     "- Prefer a PRODUCT capability when it genuinely answers the goal equally well; never force one when a build-with-us capability fits better.",
     "- capabilityId MUST be an exact id from the taxonomy. Never invent capabilities, primitives or URLs.",
     "- goalRestated: their goal in one plain sentence.",

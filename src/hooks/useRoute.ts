@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 // Minimal hash router — works on GitHub Pages without server rewrites.
 //   #/        → tree (home)
-//   #/day     → a day in the clinic
+//   #/day     → a day in the life
 //   #/all     → all capabilities
 //   #/try     → try it yourself (composer)
 

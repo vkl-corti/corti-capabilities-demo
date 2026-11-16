@@ -5,7 +5,7 @@ import { ADVANCE_PROGRAM, PRODUCTS } from "../data/products";
 import type { Capability } from "../types";
 import { TrackBadge } from "./DetailPanel";
 
-// "A day in the clinic": inspiration for clinicians. Pick who you are and
+// "A day in the life": inspiration, mostly for clinicians. Pick who you are and
 // walk through an ordinary day, with the capability that helps at each
 // moment. Click a moment to open the full capability (breakdown + CTA).
 
@@ -36,7 +36,7 @@ export function DayPage({ onOpen, onTree }: Props) {
       {/* Who are you? */}
       <aside className="border-b border-corti-border-faint px-8 py-8 lg:border-b-0 lg:border-r">
         <div className="lg:sticky lg:top-24">
-          <p className="cd-eyebrow mb-4">I am a…</p>
+          <p className="cd-eyebrow mb-4">Select a role</p>
           <ul className="space-y-1">
             {PERSONAS.map((p) => {
               const on = p.id === personaId;
@@ -63,9 +63,9 @@ export function DayPage({ onOpen, onTree }: Props) {
       <section className="px-8 py-8 lg:px-12">
         <div key={persona.id} className="cd-fade-up mx-auto max-w-[760px]">
           <p className="cd-eyebrow mb-3">{persona.setting}</p>
-          <h1 className="cd-h1 mb-3">Where Corti fits in your day</h1>
+          <h1 className="cd-h1 mb-3">Where Corti fits into the working day</h1>
           <p className="cd-lede mb-10 max-w-[56ch]">
-            Ordinary moments from {persona.setting.charAt(0).toLowerCase() + persona.setting.slice(1)}, and what changes at each one. Click a moment to see how it's built.
+            Ordinary moments from {persona.setting.charAt(0).toLowerCase() + persona.setting.slice(1)}, and what changes at each one. Select a moment to see how it is built.
           </p>
 
           <ol className="relative">

@@ -16,7 +16,7 @@ import { CapabilityDrawer } from "./components/CapabilityDrawer";
 
 const NAV: { route: Route; label: string }[] = [
   { route: "tree", label: "Capability tree" },
-  { route: "day", label: "A day in the clinic" },
+  { route: "day", label: "A day in the life" },
   { route: "all", label: "All capabilities" },
 ];
 
@@ -96,7 +96,7 @@ export default function App() {
           </nav>
           <div className="flex shrink-0 items-center gap-2">
             <button type="button" className={route === "try" ? "cd-btn cd-btn-sm" : "cd-btn-primary cd-btn-sm"} onClick={goTry}>
-              {route === "try" ? "Start over" : "Find what fits you"}
+              {route === "try" ? "Start over" : "Get recommendations"}
             </button>
             <ModeBadge mode={mode} />
           </div>

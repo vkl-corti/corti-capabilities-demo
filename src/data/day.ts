@@ -1,5 +1,5 @@
 // ————————————————————————————————————————————————
-// "A day in the clinic" — inspiration view for clinicians.
+// "A day in the life" — inspiration view, mostly for clinicians.
 //
 // Each persona is an ordinary working day. Each moment is a situation they
 // will recognise, told in their words, and the capability that helps right
@@ -29,7 +29,7 @@ export interface Persona {
 export const PERSONAS: Persona[] = [
   {
     id: "gp",
-    label: "GP",
+    label: "General practitioner",
     setting: "A day in general practice",
     moments: [
       {
@@ -52,13 +52,13 @@ export const PERSONAS: Persona[] = [
       },
       {
         time: "08:20",
-        scene: "The consultation. You'd rather look at her than at the keyboard.",
+        scene: "The consultation itself, where attention belongs with the patient rather than the keyboard.",
         capabilityId: "ambient-scribe",
         withCorti: "The note is drafted by the time she stands up. You review it and sign.",
       },
       {
         time: "09:40",
-        scene: "Your next patient arrives with a chatbot's diagnosis printed out.",
+        scene: "The next patient arrives with a self-diagnosis from an AI chatbot.",
         capabilityId: "patient-ai-review",
         withCorti: "Every claim checked against his record, plus three talking points for the visit.",
       },
@@ -76,7 +76,7 @@ export const PERSONAS: Persona[] = [
       },
       {
         time: "17:20",
-        scene: "Six unsigned notes and two letters stand between you and home.",
+        scene: "End of the day: six unsigned notes and two letters still open.",
         capabilityId: "end-of-day",
         withCorti: "One list, sorted by urgency, each item ready to sign in a couple of clicks.",
       },
@@ -84,8 +84,8 @@ export const PERSONAS: Persona[] = [
   },
   {
     id: "ward",
-    label: "Hospital doctor",
-    setting: "A day on the ward",
+    label: "Hospital physician",
+    setting: "A day in hospital medicine",
     moments: [
       {
         time: "07:30",
@@ -107,7 +107,7 @@ export const PERSONAS: Persona[] = [
       },
       {
         time: "12:00",
-        scene: "Three discharges before two o'clock.",
+        scene: "Three discharges planned before 14:00.",
         capabilityId: "document-generation",
         withCorti: "Discharge letters drafted from the record in the hospital's structure. You edit and sign.",
       },
@@ -162,13 +162,13 @@ export const PERSONAS: Persona[] = [
       },
       {
         time: "15:30",
-        scene: "A referral fax arrives, again without the imaging report.",
+        scene: "A referral arrives by fax without the imaging report.",
         capabilityId: "referral-intake",
         withCorti: "What's missing is spotted on arrival, and the request back to the referrer is already drafted.",
       },
       {
         time: "16:30",
-        scene: "Your resident wants feedback on her clinic notes.",
+        scene: "A resident asks for feedback on her consultation notes.",
         capabilityId: "trainee-feedback",
         withCorti: "Teaching feedback against the consultation. You review it before she sees it.",
       },
@@ -182,12 +182,12 @@ export const PERSONAS: Persona[] = [
   },
   {
     id: "practice",
-    label: "Practice team",
-    setting: "A day at the front desk",
+    label: "Practice operations",
+    setting: "A day in practice operations",
     moments: [
       {
         time: "07:45",
-        scene: "The phones open and the line is already full.",
+        scene: "Phone lines open and the queue is already full.",
         capabilityId: "phone-assistant",
         withCorti: "Routine bookings, changes and reminders handled. Red flags come straight to you with a summary.",
       },

@@ -10,7 +10,7 @@ import { LibraryGraph } from "./LibraryGraph";
 // Lenses swap which capabilities are in the tree (highlights, or one job).
 
 type Lens = "highlights" | Job;
-const HIGHLIGHTS_HINT = "The ones that change a clinician's day the most";
+const HIGHLIGHTS_HINT = "Capabilities with the greatest day-to-day impact";
 
 interface Props {
   pinned: string | null;
@@ -34,19 +34,19 @@ export function TreePage({ pinned, onSelect, history, onDay, onTry }: Props) {
         <div className="cd-fade-up">
           <p className="cd-eyebrow mb-3">Corti capabilities</p>
           <h1 className="cd-h1 mb-2 !text-[36px] xl:!text-[40px]">
-            What can Corti do in your clinic?
+            What can Corti do for you?
           </h1>
           <p className="cd-lede max-w-[60ch]">
-            {CAPABILITIES.length} capabilities, all built from the same {Object.keys(PRIMITIVES).length} primitives.{" "}
-            {PRODUCT_CAPABILITIES.length} are products you can use today. The rest we build with you.
+            {CAPABILITIES.length} capabilities for clinicians, care organisations and health-tech teams, all built from the same{" "}
+            {Object.keys(PRIMITIVES).length} primitives. {PRODUCT_CAPABILITIES.length} are available as products today; the rest we build with you.
           </p>
         </div>
         <div className="flex gap-2">
           <button type="button" className="cd-btn-ghost" onClick={onDay}>
-            See a day in the clinic
+            Explore a day in the life
           </button>
           <button type="button" className="cd-btn-primary" onClick={onTry}>
-            Find what fits you →
+            Get recommendations →
           </button>
         </div>
       </section>

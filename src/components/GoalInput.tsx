@@ -14,7 +14,7 @@ export function GoalInput({ onCompose, onGuided }: Props) {
     <section className="cd-dotted flex min-h-[calc(100vh-112px)] items-center px-8 py-16">
       <div className="cd-fade-up mx-auto w-full max-w-2xl">
         <p className="cd-eyebrow mb-4">Describe it yourself</p>
-        <h1 className="cd-h1 mb-4">What do you want to get done in your clinic?</h1>
+        <h1 className="cd-h1 mb-4">What would you like to achieve?</h1>
         <p className="cd-lede mb-8 max-w-[52ch]">
           Describe the outcome in your own words. A Corti agent picks the capability and shows the
           primitives it’s built from.
@@ -50,9 +50,9 @@ export function GoalInput({ onCompose, onGuided }: Props) {
         </div>
         {onGuided && (
           <p className="mt-12 text-[13px] text-corti-text-tertiary">
-            Not sure what to ask for?{" "}
+            Not sure where to start?{" "}
             <button type="button" onClick={onGuided} className="text-corti-text-secondary underline decoration-dotted underline-offset-4 hover:text-corti-accent">
-              Answer four quick questions instead
+              Answer four short questions instead
             </button>
           </p>
         )}

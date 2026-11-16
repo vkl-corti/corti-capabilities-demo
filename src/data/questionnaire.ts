@@ -2,11 +2,13 @@ import type { Capability, Job } from "../types";
 import { CAPABILITIES, getCapability } from "./capabilities";
 
 // ————————————————————————————————————————————————
-// Guided "find what fits you" questionnaire.
+// Guided recommendations questionnaire.
 //
-// Clinicians rarely arrive with a capability in mind, but they recognise
-// their own day instantly. So every question is a set of statements to
-// react to, and every answer nudges capability scores. No free text needed.
+// Visitors (mostly clinicians, but also health-system leaders, health-tech
+// teams and anyone exploring a build with Corti) rarely arrive with a
+// capability in mind, but recognise their own work at once. So every
+// question is a set of statements to react to, and every answer nudges
+// capability scores. No free text needed.
 //
 // Tuning: change `boosts` (capability id → points) or `jobBoost` (points
 // for every capability with that job). scoreAnswers() is pure, so the same
@@ -43,37 +45,52 @@ const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 export const QUESTIONS: Question[] = [
   {
     id: "role",
-    title: "First, who are you?",
-    subtitle: "So we can talk about your day, not someone else's.",
+    title: "Which best describes your role?",
+    subtitle: "We use this to tailor the recommendations.",
     multi: false,
     weight: 1,
-    reason: (l) => `you work as ${l}`,
+    reason: (l) => `your role is ${lowerFirst(l)}`,
     options: [
-      { id: "gp", reason: "you're a GP", label: "GP / family doctor", boosts: { "patient-intake": 1, "reply-drafting": 1, "form-autofill": 1, "results-review": 1, "ambient-scribe": 1 } },
-      { id: "hospital", reason: "you're a hospital doctor", label: "Hospital doctor", boosts: { "shift-handover": 1, "document-generation": 1.5, "medication-reconciliation": 1, "patient-at-a-glance": 1 } },
-      { id: "surgeon", reason: "you're a surgeon", label: "Surgeon", boosts: { "anatomy-overview": 2, "mdt-prep": 1, "medical-dictation": 1.5, "insurance-letters": 0.5 } },
-      { id: "specialist", reason: "you work in an outpatient clinic", label: "Specialist in outpatient clinic", boosts: { "referral-intake": 1.5, "results-review": 1, "ambient-scribe": 1, "document-generation": 1 } },
-      { id: "nurse", reason: "you're a nurse", label: "Nurse", boosts: { "shift-handover": 2, "patient-intake": 1, "health-monitoring": 1, "after-visit-summary": 1 } },
+      { id: "gp", reason: "you are a general practitioner", label: "General practitioner", boosts: { "patient-intake": 1, "reply-drafting": 1, "form-autofill": 1, "results-review": 1, "ambient-scribe": 1 } },
+      { id: "hospital", reason: "you are a hospital physician", label: "Hospital physician", boosts: { "shift-handover": 1, "document-generation": 1.5, "medication-reconciliation": 1, "patient-at-a-glance": 1 } },
+      { id: "surgeon", reason: "you are a surgeon", label: "Surgeon", boosts: { "anatomy-overview": 2, "mdt-prep": 1, "medical-dictation": 1.5, "insurance-letters": 0.5 } },
+      { id: "specialist", reason: "you are a specialist physician", label: "Specialist physician", hint: "Outpatient or ambulatory care", boosts: { "referral-intake": 1.5, "results-review": 1, "ambient-scribe": 1, "document-generation": 1 } },
+      { id: "nurse", reason: "you work in nursing", label: "Nurse", boosts: { "shift-handover": 2, "patient-intake": 1, "health-monitoring": 1, "after-visit-summary": 1 } },
       {
         id: "practice",
-        reason: "you run the front desk",
-        label: "Practice manager / front desk",
+        reason: "you work in practice or clinic management",
+        label: "Practice or clinic management",
+        hint: "Operations, front office, billing",
         boosts: { "phone-assistant": 2, "inbox-assistant": 2, "scheduling-assistant": 1.5, routines: 1, "document-import": 1, "billing-assistant": 1, "denial-management": 1 },
+      },
+      {
+        id: "leader",
+        reason: "you lead a health system or its IT",
+        label: "Health system or IT leadership",
+        hint: "CMIO, CIO, digital or innovation lead",
+        boosts: { "ambient-scribe": 1.5, "health-monitoring": 1, routines: 1, "billing-assistant": 1, "regulatory-check": 1, "patient-at-a-glance": 1 },
+      },
+      {
+        id: "builder",
+        reason: "you build healthcare software",
+        label: "Health-tech company or product team",
+        hint: "Building or extending a product",
+        boosts: { "ambient-scribe": 1.5, "medical-dictation": 1.5, "medical-knowledge-assistant": 1, "billing-assistant": 1, "chart-search": 0.5 },
       },
     ],
   },
   {
     id: "time",
-    title: "Where does your day go?",
-    subtitle: "Pick up to three that eat the most time.",
+    title: "Where does the most time go?",
+    subtitle: "Select up to three, for yourself or for the clinicians you support.",
     multi: true,
     max: 3,
     weight: 1,
-    reason: (l) => `your time goes to ${lowerFirst(l)}`,
+    reason: (l) => `most time goes to ${lowerFirst(l)}`,
     options: [
       {
         id: "notes",
-        label: "Writing notes during or after visits",
+        label: "Clinical documentation during and after consultations",
         boosts: { "ambient-scribe": 3, "medical-dictation": 1.5, "virtual-visit-notes": 1, "documentation-check": 1, "self-learning-vocabulary": 0.5, "voice-commands": 0.5 },
       },
       {
@@ -83,62 +100,63 @@ export const QUESTIONS: Question[] = [
       },
       {
         id: "prep",
-        label: "Getting up to speed on a patient",
+        label: "Reviewing patient history before a consultation",
         boosts: { "patient-at-a-glance": 3, "chart-search": 2, "results-review": 1.5, "consultation-pointers": 1, "anatomy-overview": 1, "mdt-prep": 1 },
       },
       {
         id: "messages",
-        label: "Messages, calls and patient questions",
+        label: "Patient messages, calls and enquiries",
         boosts: { "reply-drafting": 2.5, "inbox-assistant": 2.5, "phone-assistant": 2, "chat-with-record": 1 },
       },
       {
         id: "followup",
-        label: "Follow-ups and things that slip through",
+        label: "Follow-up tasks and open items",
         boosts: { "task-extraction": 3, "end-of-day": 2, routines: 1.5, "health-monitoring": 1 },
       },
       {
         id: "checking",
-        label: "Checking, coding and compliance",
+        label: "Coding, billing and compliance",
         boosts: { "billing-assistant": 3, "regulatory-check": 2, "diagnosis-list-reconciliation": 2, "structured-chart-data": 1.5, "denial-management": 1 },
       },
-      { id: "incoming", label: "Incoming documents, faxes and scans", boosts: { "document-import": 3, "referral-intake": 3 } },
-      { id: "lookup", label: "Looking things up: guidelines, doses", boosts: { "medical-knowledge-assistant": 3, "chart-search": 1 } },
+      { id: "incoming", label: "Processing incoming documents and referrals", boosts: { "document-import": 3, "referral-intake": 3 } },
+      { id: "lookup", label: "Looking up guidelines and drug information", boosts: { "medical-knowledge-assistant": 3, "chart-search": 1 } },
     ],
   },
   {
     id: "situations",
-    title: "Does any of this sound familiar?",
-    subtitle: "Tick everything that happens to you. Skip if none do.",
+    title: "Which of these situations apply?",
+    subtitle: "Select all that apply, or continue if none do.",
     multi: true,
     weight: 1.6,
-    reason: (l) => `you said “${l}”`,
+    reason: (l) => `you mentioned ${lowerFirst(l)}`,
     options: [
-      { id: "virtual", label: "I see patients by phone or video", boosts: { "virtual-visit-notes": 3 } },
-      { id: "language", label: "Some patients don't speak my language", boosts: { "consultation-interpreter": 3.5 } },
-      { id: "ai", label: "Patients arrive with ChatGPT's diagnosis", boosts: { "patient-ai-review": 3.5 } },
-      { id: "handover", label: "I hand over patients at shift change", boosts: { "shift-handover": 3 } },
-      { id: "trainees", label: "I supervise trainees or residents", boosts: { "trainee-feedback": 3 } },
-      { id: "surgery", label: "My patients have had several operations", boosts: { "anatomy-overview": 3 } },
-      { id: "mdt", label: "I prepare cases for MDT or tumour board", boosts: { "mdt-prep": 3 } },
-      { id: "meds", label: "Medication lists never match between sources", boosts: { "medication-reconciliation": 3 } },
-      { id: "late", label: "I stay late to finish admin", boosts: { "end-of-day": 3, "ambient-scribe": 1 } },
-      { id: "forget", label: "Patients forget what we discussed", boosts: { "after-visit-summary": 3, "chat-with-record": 1.5 } },
-      { id: "phones", label: "Our phone lines are always busy", boosts: { "phone-assistant": 3 } },
-      { id: "labs", label: "Lab results pile up", boosts: { "results-review": 3 } },
+      { id: "virtual", label: "Consultations by phone or video", boosts: { "virtual-visit-notes": 3 } },
+      { id: "language", label: "Patients who speak a different language", boosts: { "consultation-interpreter": 3.5 } },
+      { id: "ai", label: "Patients presenting AI-generated self-diagnoses", boosts: { "patient-ai-review": 3.5 } },
+      { id: "handover", label: "Shift handovers", boosts: { "shift-handover": 3 } },
+      { id: "trainees", label: "Supervising trainees or residents", boosts: { "trainee-feedback": 3 } },
+      { id: "surgery", label: "Patients with complex surgical histories", boosts: { "anatomy-overview": 3 } },
+      { id: "mdt", label: "MDT or tumour board preparation", boosts: { "mdt-prep": 3 } },
+      { id: "meds", label: "Medication lists that differ between sources", boosts: { "medication-reconciliation": 3 } },
+      { id: "late", label: "Administrative work after hours", boosts: { "end-of-day": 3, "ambient-scribe": 1 } },
+      { id: "forget", label: "Patients not retaining visit instructions", boosts: { "after-visit-summary": 3, "chat-with-record": 1.5 } },
+      { id: "phones", label: "High inbound call volumes", boosts: { "phone-assistant": 3 } },
+      { id: "labs", label: "Large volumes of results to review", boosts: { "results-review": 3 } },
     ],
   },
   {
     id: "goal",
-    title: "What would make the biggest difference?",
-    subtitle: "Pick the one that matters most to you.",
+    title: "What is your main objective?",
+    subtitle: "Select the one that matters most.",
     multi: false,
     weight: 0.5,
-    reason: (l) => `you want ${lowerFirst(l)}`,
+    reason: (l) => `your objective is to ${lowerFirst(l)}`,
     options: [
-      { id: "patient", reason: "you want more time with patients", label: "More time with my patients", hint: "Less screen, more eye contact", jobBoost: { capture: 1.5, understand: 1 } },
-      { id: "home", reason: "you want to go home on time", label: "Going home on time", hint: "Less admin after hours", jobBoost: { write: 1.5, automate: 1 }, boosts: { "end-of-day": 1 } },
-      { id: "safety", reason: "you want fewer things missed", label: "Fewer things missed", hint: "Catch gaps and errors early", jobBoost: { check: 2 } },
-      { id: "team", reason: "you want less admin for your team", label: "Less admin for my team", hint: "Calls, inbox and paperwork handled", jobBoost: { automate: 2 } },
+      { id: "patient", reason: "your objective is more time for patient care", label: "More time for patient care", hint: "Less time at the screen", jobBoost: { capture: 1.5, understand: 1 } },
+      { id: "home", reason: "your objective is less after-hours work", label: "Less after-hours work", hint: "Documentation and admin done within the day", jobBoost: { write: 1.5, automate: 1 }, boosts: { "end-of-day": 1 } },
+      { id: "safety", reason: "your objective is quality and patient safety", label: "Quality and patient safety", hint: "Gaps and errors caught early", jobBoost: { check: 2 } },
+      { id: "team", reason: "your objective is a lower administrative workload", label: "Lower administrative workload", hint: "Calls, inbox and paperwork", jobBoost: { automate: 2 } },
+      { id: "build", reason: "you want to build or extend a product", label: "Build or extend a product", hint: "Embed Corti capabilities in your solution", jobBoost: { capture: 0.5, understand: 0.5, check: 0.5 } },
     ],
   },
 ];
