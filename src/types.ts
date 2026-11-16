@@ -34,13 +34,57 @@ export interface TrustRef {
 }
 
 /** Notion "Category" — primary user group the capability serves. */
-export type CapabilityCategory = "Clinician-facing" | "Operations" | "Patient-facing" | "Platform (all users)";
+export type CapabilityCategory = "Clinician-facing" | "Operations" | "Patient-facing";
+
+/**
+ * Commercial path for a capability.
+ * - product: a Corti product you can use today → CTA goes to the product.
+ * - custom:  explained, broken down into primitives → CTA goes to the
+ *            Advance program (build it with Corti, tailored to the customer).
+ */
+export type Track = "product" | "custom";
+
+/**
+ * What the capability does with information — single value, used to group
+ * the catalogue. Maps onto the design team's import / transform split via
+ * JOBS[job].flow (capture = import; write/check/understand = transform;
+ * automate = act, the case the binary split misses).
+ */
+export type Job = "capture" | "write" | "check" | "understand" | "automate";
+export type Flow = "import" | "transform" | "act";
+
+/** Where the capability's information comes from — multi-value facet for
+ *  filtering and for "similar to what you've looked at" recommendations. */
+export type InfoSource =
+  | "conversation" // live consultation audio
+  | "voice" // the clinician dictating
+  | "record" // the EHR / chart
+  | "documents" // incoming PDFs, scans, faxes, letters
+  | "messages" // email, voicemail, portal messages, calls
+  | "patient" // the patient directly (app, SMS, phone)
+  | "rules" // guidelines, policies, requirement sets
+  | "schedule"; // calendar and booking history
+
+export interface Product {
+  id: string;
+  /** Short product name as used in sales conversations, e.g. "Scribe". */
+  name: string;
+  /** One line: what you get today. */
+  pitch: string;
+  href: string;
+  cta: string;
+}
 
 /** THE drop-in unit: one capability composed from primitives. */
 export interface Capability {
   id: string;
   name: string;
   category: CapabilityCategory;
+  track: Track;
+  /** Set when track === "product". */
+  productId?: string;
+  job: Job;
+  inputs: InfoSource[];
   /** ≤7-word tagline for the library overview card. */
   short: string;
   /** Clinical outcome, clinician-first. e.g. "Every referral is sorted by urgency before it reaches your desk." */

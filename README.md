@@ -1,14 +1,21 @@
-# Corti — Capability Composer demo
+# Corti — Capabilities demo
 
-Opens on the **capability library**: the four primitives stacked on the left,
-arrows to the ten capabilities they compose. Hover a primitive or capability
-to trace its pipeline, click a capability to pin it. A **"Try it out
-yourself"** CTA hands over to the composer: a clinician says what they want to
-get done, a real Corti agent maps the goal to a capability, and the same tree
-lights up the match with its pipeline detail.
+Capability first, primitives second. The landing opens on what you can get
+done, not on what it's built from:
 
-Flips the corti.ai narrative: not "here are our primitives", but "here is
-what they add up to for you".
+1. **Use today:** the four products (Scribe, Dictation, Coding, Chat).
+   Each links straight to the product.
+2. **For you:** recommendations from what this visitor has opened.
+3. **Build with us:** every other capability, grouped by *job* (Capture,
+   Write, Check, Understand, Automate). Opening one shows the problem, how it
+   works, then **boils it down** to the primitives it is built from. The
+   CTA leads to the **Advance program** (build it with Corti, tailored).
+4. **Under the hood:** the primitives map. Hover to trace any capability back
+   to its building blocks.
+
+"Try it yourself" hands over to the composer: a clinician says what they want
+to get done, a real Corti agent maps it to a capability, and the same
+breakdown and CTA appear for the match.
 
 ## Run it
 
@@ -52,11 +59,11 @@ Agentic Framework). Without them, the demo runs in mock mode automatically.
   optional alternative and per-node insights. The tree is built in the
   browser from `src/data/capabilities.ts` — so corti.ai URLs and pipeline
   copy are never hallucinated, and mock and LIVE trees are identical.
-- **One drop-in file.** `src/data/capabilities.ts` holds the taxonomy. When
-  the real capability content arrives, replace its contents — components,
-  prompt and agent are untouched. The agent prompt is regenerated from the
-  file (`toAgentTaxonomy()`) and PATCHed onto the live agent at every run,
-  so taxonomy edits propagate on restart.
+- **Two data files.** `notion-snapshot.json` (Notion, verbatim) plus
+  `capabilities.ts` (editorial layer), with CTA targets in `products.ts`.
+  Components, prompt and agent are untouched by taxonomy changes. The agent
+  prompt is regenerated from the data (`toAgentTaxonomy()`, now including
+  track and job) and PATCHed onto the live agent at every run.
 - **Vite plugin backend** (`server/cortiAgentServer.ts`) holds the OAuth
   client-credentials in `.env`, creates/reuses the agent by name
   (persistent lifecycle, schema connector set at creation), and serves
@@ -78,16 +85,57 @@ mean position of their primitives to minimise crossings.
 
 ## Source of truth
 
-Capabilities and primitives are synced from Corti's internal capability
-database, last synced 2026-11-11. Name, category, one-liner, clinical problem, how it works and
-primitives used come from Notion; pipeline-step wording and match keywords are
-derived from "How it works".
+`src/data/notion-snapshot.json` is a verbatim copy of the public-safe fields
+of Corti's capability database (name, category, one-liner, clinical problem,
+how it works, primitives used, backlog), synced 2026-11-16. Internal notes and
+competitor columns are deliberately **not** copied, because the site is public.
 
-All 21 Notion capabilities are in the data and the composer agent matches
-against all of them. The library tree shows a featured 10
-(`FEATURED_IDS`). The rest are under **"See all 21"** (graph header)
-or **"All 21 capabilities"** (top bar) — a filterable list grouped by Notion
-category. Picking one, or an agent match outside the 10, adds it to the tree
-marked "From full list". Primitives are the five build blocks; Notion's
-"Embedded Assistant" tag is a UI surface and is left out. To change the
-selection or re-sync, edit `src/data/capabilities.ts` only.
+`src/data/capabilities.ts` adds a small editorial layer per Notion row
+(tagline, job, inputs, per-primitive pipeline wording, connectors,
+review rule, product link). On load it warns in the console when:
+- a Notion row has no editorial entry (it is skipped), or
+- Notion's "Primitives used" ≠ the pipeline's primitives.
+
+Excluded: rows ticked **Backlog** (Care Plan Assistant, Diagnosis assistant,
+Patient triage), and **AI review trail**, which is a trust-layer item on
+every capability instead of a card (as its Notion note suggests).
+
+Re-sync = re-export the snapshot, then fill any warnings.
+
+## Products vs. build-with-us
+
+`src/data/products.ts` is the only place CTA targets live.
+
+| Product | Notion capability | Link (verified 2026-11-16) |
+| --- | --- | --- |
+| Scribe | Ambient scribe | corti.ai/speech-to-text (no dedicated page yet) |
+| Dictation | Medical dictation | corti.ai/speech-to-text (no dedicated page yet) |
+| Coding | Billing Assistant | corti.ai/medical-coding |
+| Chat | Medical Knowledge Assistant | corti.ai/agentic-framework (no chat page yet) |
+| Advance program | all other capabilities | corti.ai/contact?capability=<id> (no program page yet) |
+
+## Structuring capabilities programmatically (for design)
+
+Each capability carries facets that are data, not copy:
+
+| Facet | Values | Use |
+| --- | --- | --- |
+| `track` | product · custom | Which CTA: go to the product, or build it with us |
+| `job` | capture · write · check · understand · automate | Primary grouping in the catalogue |
+| `JOBS[job].flow` | import · transform · act | The import/transform split, derived from the job |
+| `inputs` | conversation, voice, record, documents, messages, patient, rules, schedule | Filters and similarity |
+| `category` | Clinician-facing · Operations · Patient-facing (Notion) | Role filter |
+| `pipeline` | primitives | The boil-down, and similarity |
+
+Import vs. transform works as a derived flag, not as the main axis: some
+capabilities fit neither side (the "act" ones: phone, inbox, routines,
+monitoring), and many do both (Scribe imports a conversation *and*
+transforms it into a note). Grouping by the primary job keeps every
+capability in one group, and import/transform stays filterable on top.
+
+`src/data/recommend.ts` exports `recommend(history, { role, track, limit })`.
+It is pure and deterministic, scoring by shared primitives (rare ones
+weighted higher), same job, shared inputs and same user group. With no
+history it puts products first. The demo feeds it from localStorage
+(`useViewHistory`). In production, pass any history source (analytics, CRM,
+product usage); the function doesn't care.

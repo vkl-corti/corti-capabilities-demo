@@ -1,0 +1,533 @@
+{
+  "syncedAt": "2026-11-16",
+  "source": "Corti AI capabilities (Notion)",
+  "rows": [
+    {
+      "name": "AI review trail",
+      "category": null,
+      "oneLiner": "Logs what the AI produced, what the clinician changed and who signed, so every AI-assisted entry can be traced",
+      "clinicalProblem": "AI use is moving faster than policy. Doximity found 81% of physicians say AI use is permitted at their organization but only 28% have clear policies and approvals. Hospitals need to show who reviewed what, and clinicians want to show they did.",
+      "howItWorks": "For each AI-generated item (note, letter, code, task) it records the AI draft, the final version, the edits, the sources used, and who approved it and when. Compliance or the clinician can filter by person, type or period. It is read-only and does not change any entry.",
+      "primitives": [
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Ambient scribe",
+      "category": "Clinician-facing",
+      "oneLiner": "Ambient AI transcription + clinical note generation during HCP consultations",
+      "clinicalProblem": "Clinicians spend a large part of the day writing notes, during visits or after them, and attention goes to the screen instead of the patient. Notes written late from memory lose detail and add overtime at the end of the day.",
+      "howItWorks": "Listens to the consultation with consent and produces a live transcript with the speakers separated. At the end of the visit it generates the clinical note from the transcript, structured to the specialty's template. The clinician reviews and edits the note before it is signed. Nothing enters the record unreviewed.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation",
+        "Embedded Assistant"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Anatomy overview",
+      "category": "Clinician-facing",
+      "oneLiner": "Builds a combined overview of the patient’s current anatomy from surgical notes, imaging and the EHR. Mainly for surgery, but useful anywhere the anatomy has been changed.",
+      "clinicalProblem": "Patients with several previous operations can have anatomy that is very hard to reconstruct. A patient might have three abdominal drains, several anastomoses, a few sutured enterotomies and a mesh from an old hernia repair, all described across different operative notes and imaging reports. Before operating, or when deciding where to place a drain or line, the surgeon has to piece this together by hand. Things get missed and it takes a lot of time.",
+      "howItWorks": "Reads through operative notes, imaging reports, procedure notes and nursing documentation in the EHR. It records what has changed in the anatomy: organs removed, organs rearranged, anastomoses and enterotomies, implanted material like mesh, congenital abnormalities. It also lists the drains, tubes, IV lines and catheters currently in place, with when and where each was placed. It matches the surgical history against imaging, so a finding on a CT can be linked to the operation that explains it. Where the operative note and the imaging don’t agree, it flags that instead of choosing one. Every item links back to its source document. The result is a structured overview and a graphical overview, ordered by body region, that the clinician can check before surgery or at a handover.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Call and video visit notes",
+      "category": "Clinician-facing",
+      "oneLiner": "Transcribes a phone or video consultation and produces the note and a follow-up message for the patient",
+      "clinicalProblem": "Virtual consultations often run in a separate tool with no link to the record, so the note is written afterwards from memory and the follow-up is a separate job.",
+      "howItWorks": "Joins the call from the clinician's phone or video tool, with consent, and produces a live transcript with the speakers separated. At the end it generates the note in the specialty template and, if wanted, drafts a follow-up text for the patient. The clinician reviews and edits before anything is saved or sent.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation",
+        "Embedded Assistant"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Care Plan Assistant",
+      "category": "Clinician-facing",
+      "oneLiner": "Suggests prescription & treatment plan based on diagnosis, aligned with clinical guidelines",
+      "clinicalProblem": "Choosing a treatment means checking the current guideline, interactions with existing medication, allergies and local practice, with no time to consult any of it mid-visit. Choices rely on memory, so they drift from guidelines and miss what has changed.",
+      "howItWorks": "Takes the diagnosis together with the patient's record (medications, allergies, conditions, results) and retrieves the relevant guideline and local protocols. Drafts a proposed plan (prescriptions with dosing, tests, follow-up) with the guideline passage cited for each suggestion. The clinician accepts, changes or rejects each item; nothing is prescribed without their sign-off.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": true
+    },
+    {
+      "name": "Chart search",
+      "category": "Clinician-facing",
+      "oneLiner": "Semantic search on top of the record, returning documents or answering a question directly with the source shown",
+      "clinicalProblem": "How a clinician finds a specific piece of information in the EHR today, and where that breaks down.",
+      "howItWorks": "Indexes the documents in the patient's record (notes, letters, results, reports). The clinician asks in natural language; it finds the matching passages and answers the question directly, with each statement linked to the document and place it came from. It only searches the record and only shows what the clinician is authorized to see. It is read-only and never writes to the chart.",
+      "primitives": [
+        "Corti Models",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Consultation interpreter",
+      "category": "Clinician-facing",
+      "oneLiner": "Translates the conversation live when clinician and patient do not share a language, and writes the note in the clinician's language",
+      "clinicalProblem": "Language barriers lead to missed history, weak consent and reliance on family members or ad hoc interpreters. Qualified interpreters are not always available when needed.",
+      "howItWorks": "Both speakers' speech is transcribed and translated in near real time and shown on screen in each person's language. At the end the note is generated in the clinician's language from the translated transcript, and the original-language transcript is kept. Medication names and doses are shown in both languages so they can be confirmed. It supports a qualified interpreter and does not replace one where one is required.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Consultation preparation pointers",
+      "category": "Clinician-facing",
+      "oneLiner": "Suggests examination and questioning pointers for the upcoming or ongoing consultation, based on the EHR and ambient listening",
+      "clinicalProblem": "Clinicians often go into a consultation without a clear idea of what the problem is likely to be, or the problem changes during the conversation. What to ask and what to examine then depends on memory and experience. Relevant questions or examinations get missed, especially when time is short or the problem is outside the clinician's usual area.",
+      "howItWorks": "Before the consultation it reads the EHR (referral, previous notes, results, medications) and works out which problems are likely to come up. During the consultation it listens ambiently and updates that picture as the conversation goes on. Based on this it shows short pointers for history taking and clinical examination, for example questions that help tell possible causes apart or examinations that should not be left out. The pointers are suggestions only and the clinician decides what to use. Each pointer shows why it was suggested, with a link to the part of the record or the conversation it came from.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Diagnosis assistant",
+      "category": "Clinician-facing",
+      "oneLiner": "Suggest differential diagnosis and care path to diagnosis",
+      "clinicalProblem": "Reaching a diagnosis takes several visits: order tests, see the patient again, narrow it down. With limited time per patient and thousands of rare conditions, uncommon diagnoses are considered late and unnecessary tests get ordered along the way.",
+      "howItWorks": "Takes the patient's history, symptoms, findings and results and produces a ranked differential diagnosis, with the reasoning and supporting evidence for each candidate. It also proposes the path to a diagnosis: which tests or referrals would confirm or rule out what. The clinician keeps the decision; the suggestions are advisory only.",
+      "primitives": [
+        "Corti Models",
+        "Text generation"
+      ],
+      "backlog": true
+    },
+    {
+      "name": "Diagnosis list reconciliation",
+      "category": "Clinician-facing",
+      "oneLiner": "Checks the patient's diagnosis list against what the visit notes actually say and proposes one-click corrections",
+      "clinicalProblem": "Problem lists drift: a diagnosis entered years ago — or entered wrong — persists while the documentation says otherwise. Stale or wrong diagnoses propagate into letters, billing codes, medication decisions and referrals.",
+      "howItWorks": "An agent compares every diagnosis on the list with the visit notes; each mismatch comes with a reason and a suggested correction (e.g. the list says type 1 diabetes while the notes consistently say type 2, so E10.90 should be E11.90), applied with one click.",
+      "primitives": [
+        "Agentic framework",
+        "Text generation",
+        "Medical coding"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Document generation assistant",
+      "category": "Clinician-facing",
+      "oneLiner": "Generates documents based on patient profile and encounters",
+      "clinicalProblem": "Encounters have to be written up into several documents (discharge letter, referral, summary for the GP), each in a different structure, and staff produce them by copying from the notes. The copying is slow, repetitive work, and errors that slip in end up in the record.",
+      "howItWorks": "Takes the notes and documents from the EHR and pulls out the reason for admission, key events and findings, treatment, medication changes and follow-up. It writes them into a desired document in the structure the hospital uses. The clinician reviews and edits the draft before it is signed. Anything that is missing or unclear in the record is flagged and not filled in.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Document import",
+      "category": "Clinician-facing",
+      "oneLiner": "Turns scanned PDFs into editable documents and pasted lab reports into validated lab values with H/L flags, keeping the original alongside",
+      "clinicalProblem": "Referral letters and findings arrive as scans and faxes without a text layer, so they get re-typed or sit unread; lab values embedded in free text or letters never reach the cumulative lab chart, hiding trends and abnormal values.",
+      "howItWorks": "PDFs are read page by page with OCR — scans cut into high-resolution tiles so numbers, units and drug names survive the request-size limit — with temperature-0 transcription to avoid 'plausible' corrections; the text becomes an editable draft the clinician corrects before saving, with an optional form-only cleanup of scan artifacts that never touches medical content (numbers, units, dosages come back character-identical). Pasted lab text goes to an agent that returns every value as typed JSON (parameter, value, unit, reference range, collection date), which is reconciled with the practice's parameter catalog — unit conversion, reference ranges, H/L flags — and applied as a new report after the clinician ticks each value.",
+      "primitives": [
+        "Corti Models",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Documentation check against transcript",
+      "category": "Clinician-facing",
+      "oneLiner": "Checks a clinical note against the transcript and against itself for unsupported, missing or mixed-up details, with the source shown for each finding",
+      "clinicalProblem": "Notes can contain details that were never said, leave out things that were said, or mix up details like left and right. Clinicians sign notes under time pressure and rarely have time to check every line against the consultation.",
+      "howItWorks": "Takes the transcript and the note. Compares the note to the transcript and to itself, then lists each finding (unsupported, missing, inconsistent) with the source passage. The clinician decides what to change. The capability does not edit the note and does not make clinical judgments.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "End-of-day catch-up",
+      "category": "Clinician-facing",
+      "oneLiner": "One list at the end of the clinic day with unsigned notes, open tasks and unfinished letters, each prepared for quick sign-off",
+      "clinicalProblem": "Work that was not finished during the day moves to the evening. Doximity found 26% of physicians spend more than six hours a week on after-hours admin, and the open items are spread over the notes, the inbox and the task list.",
+      "howItWorks": "Collects what is still open for the clinician: notes not signed, tasks from visits, letters in draft, results to acknowledge. Sorts them by urgency and prepares each item so it can be reviewed and signed in a few clicks. Nothing is signed or sent automatically.",
+      "primitives": [
+        "Agentic framework",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Form autofill",
+      "category": "Clinician-facing",
+      "oneLiner": "Fills any form — practice templates such as sick notes and prescriptions, or any imported PDF questionnaire — from the patient record, with a source quote behind every field",
+      "clinicalProblem": "Recurring forms (certificates, prescriptions, insurance and screening questionnaires) are typed by hand from data that is already in the record. Transcription errors and minutes per form add up over a clinic day, and diagnosis fields must only use codes the doctor has actually confirmed.",
+      "howItWorks": "The clinician selects the visits to draw from and picks a form — a practice template, or an imported PDF whose questions and answer options are read automatically. An agent pulls each answer from the record and fills the field together with its source quote ('Fundstelle'); anything not found is left empty for the clinician rather than guessed, and diagnosis fields only use billing-confirmed codes. The filled form is reviewed and saved.",
+      "primitives": [
+        "Agentic framework",
+        "Corti Models",
+        "Medical coding"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Insurance and support letters",
+      "category": "Clinician-facing",
+      "oneLiner": "Drafts insurance, authorization and support letters from a short request, with the evidence pulled from the record and cited",
+      "clinicalProblem": "Letters to insurers, employers and authorities need diagnosis, history, treatment and a justification from across the record. They are written under time pressure, often after hours, and a missing detail means the letter comes back.",
+      "howItWorks": "The clinician says what is needed, for example a letter supporting an MRI request. An agent finds the relevant history, results and earlier treatment in the record and drafts the letter in the structure the receiver expects, with the source passage for each statement. Missing information is flagged and not filled in. The clinician edits and signs.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "MDT and tumor board prep",
+      "category": "Clinician-facing",
+      "oneLiner": "Builds one cited case summary per patient for a multidisciplinary meeting, with conflicts, pending results and open questions listed",
+      "clinicalProblem": "Someone has to gather history, imaging, pathology, results and treatments from many places for every patient on the agenda. It takes hours and is often done the night before.",
+      "howItWorks": "Takes the list of patients on the agenda. For each one it pulls diagnosis and staging, key events, treatments, and relevant results, imaging and pathology reports, and writes a one-page case summary with every statement linked to its source. Conflicts between documents, pending results and missing information are listed separately. The clinician adds the question for the meeting. It does not recommend a treatment.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Medical dictation",
+      "category": "Clinician-facing",
+      "oneLiner": "Real-time medical speech-to-text used across products for HCP",
+      "clinicalProblem": "Much clinical writing still happens in the EHR's own fields (reports, letters, structured forms), where an ambient scribe does not fit. Clinicians type it by hand, which is slow and pulls attention away from the patient.",
+      "howItWorks": "The clinician speaks and the text appears in real time where the cursor is, inside any field of the host application. Medical terms, drug names and dosages are recognized, and spoken commands (f.e. new line, next field) control the text. The clinician sees and edits everything as it lands.",
+      "primitives": [
+        "Speech-to-text"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Medical Knowledge Assistant",
+      "category": "Clinician-facing",
+      "oneLiner": "AI-powered access to verified medical guidelines, drug databases and clinical knowledge with sourced answers",
+      "clinicalProblem": "Clinicians need current guidelines, drug references and local protocols at the point of care, but those live in separate systems and PDFs. Searching them mid-visit is slow, so questions go unanswered or are answered from memory.",
+      "howItWorks": "The clinician asks a question in natural language. It searches the connected sources (guidelines, drug databases, local protocols) and answers with the key point plus the exact source passage. It only answers from the sources it is connected to and shows where each claim comes from; it does not substitute its own medical opinion.",
+      "primitives": [
+        "Agentic framework",
+        "Corti Models"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Medication reconciliation",
+      "category": "Clinician-facing",
+      "oneLiner": "When the sources conflict, the capability flags it for the clinician instead of deciding itself.",
+      "clinicalProblem": "In practice the medication list comes from several sources (patient conversation, referral, previous notes, EHR medication record), and those sources disagree.",
+      "howItWorks": "Collects the medication lists from the sources available for the visit: what the patient says, the referral letter, previous notes, the EHR record. Compares them line by line and lists the conflicts (medication present in one source and missing in another, dosage differences, drugs the patient has stopped taking). The clinician resolves each conflict with the patient and the record is updated. The capability flags conflicts; it does not pick the correct list itself.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Patient AI conversation review",
+      "category": "Clinician-facing",
+      "oneLiner": "Takes what a patient got from a consumer AI chat, checks each claim against their record, and gives the clinician a short summary with talking points for the visit",
+      "clinicalProblem": "Patients increasingly arrive with a self-diagnosis or treatment plan from a generative AI tool. Some of it is helpful, some is wrong and stated with confidence, and the clinician has no time to read a long chat log and work out what holds up for this patient.",
+      "howItWorks": "The patient or clinician adds the chat. The capability lists the claims in it (diagnoses, treatments, drug suggestions) and compares each one with the patient's record (history, medication, allergies, results). Each claim is marked as consistent with the record, not supported by the record, or in conflict with it, with the source shown. It ends with a few talking points for the visit. It does not diagnose and does not judge the patient's chat, the clinician decides what to take up.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Patient-at-a-glance/ Timeline",
+      "category": "Clinician-facing",
+      "oneLiner": "Creates a summary of the patient based on all the information in the EHR. What clinicians want to see first depends on role and context",
+      "clinicalProblem": "Before seeing a patient, the clinician digs through the record to reconstruct the story: what changed since last time, which results matter, what the other clinic did. The information exists but is scattered across notes, letters and results, and finding it costs minutes per patient.",
+      "howItWorks": "Pulls the patient's documents, notes, results and medications from the EHR and builds a summary: the history in order, what changed since the last visit, open items. Content and order follow the role and setting (GP visit vs. hospital admission). Every statement links back to its source in the record. It is a view for preparation, not a second copy of the record.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Regulatory documentation check",
+      "category": "Clinician-facing",
+      "oneLiner": "Checks a note or form against a given set of documentation requirements and shows what is missing, with the rule and the source for each finding",
+      "clinicalProblem": "Notes and forms have to contain certain elements to meet national, hospital or registry requirements, and missing elements are often only found later, when someone audits the record or a form is sent back. Checking by hand against long requirement lists takes time that clinicians and documentation staff don't have.",
+      "howItWorks": "Takes a note or form and a given rule set, for example mandatory fields or required elements. Checks which elements are present, missing or incomplete, and lists each finding with the rule and the source passage. The clinician fixes what is missing. The capability only checks against the rules it is given and does not judge the care.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Reply drafting in your own style",
+      "category": "Clinician-facing",
+      "oneLiner": "Drafts replies to patients' written questions from the record, in the clinician's own writing style and within set guardrails",
+      "clinicalProblem": "Written patient questions (e-consultations, portal messages) pile up, and clinicians write similar replies again and again. The reply has to be clinically right and still sound like the clinician.",
+      "howItWorks": "Takes the patient's question and the relevant parts of the record and drafts a reply in the clinician's style, learned from examples the clinician has approved. Guardrails apply: no new diagnosis, no medication changes, red flags are escalated and not answered. The source passage for each fact is shown. The clinician edits and sends.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Results review",
+      "category": "Clinician-facing",
+      "oneLiner": "Summarizes new lab and test results against the patient's history, with trends, flags and the source for each value",
+      "clinicalProblem": "Results arrive in large numbers and each one has to be compared with earlier values, the diagnosis and the medication. Trends hide in long lists and abnormal or changed values are noticed late.",
+      "howItWorks": "New results are pulled in together with earlier values for the same parameters. The capability checks change over time, flags values that are abnormal or newly changed, and relates them to active diagnoses and medication in the record. The clinician gets one short summary per patient, each statement linked to the result it comes from. It does not diagnose and does not recommend treatment.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Self-learning vocabulary",
+      "category": "Clinician-facing",
+      "oneLiner": "Dictation that learns the clinician's own vocabulary, removes filler words and flags likely misrecognized terms and drug names",
+      "clinicalProblem": "Dictation misses the clinic's own terms, names, abbreviations and drug names, so clinicians correct the same errors again and again. Spoken filler words and false starts also end up in the text and have to be removed by hand.",
+      "howItWorks": "Adapts to the clinician's or clinic's own vocabulary over time, from the corrections the clinician makes and from approved documents. Removes filler words and false starts so the text reads like written text. When a term or drug name looks like a misrecognition from context, it flags the likely correction for the clinician to accept. It never changes numbers, units or dosages on its own.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Shift handover",
+      "category": "Clinician-facing",
+      "oneLiner": "Builds a structured handover at shift change from the record, organized by patient and open issues",
+      "clinicalProblem": "Handover happens verbally or from hand-made lists, and details get lost, especially in the ICU and on wards where many things change during a shift.",
+      "howItWorks": "At the end of the shift it collects, per patient, the current status, what changed during the shift, interventions and how the patient responded, pending results and tasks, and escalation plans. Patients are ordered by acuity. The incoming clinician can open each item to see the source note. The outgoing clinician reviews and adds before handing over. It can follow a framework the unit uses, for example ABCDE or SBAR.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Structured chart data",
+      "category": "Clinician-facing",
+      "oneLiner": "Pulls allergies, problems, medications and vitals out of the visit and notes into structured chart fields with standard codes, for the clinician to confirm",
+      "clinicalProblem": "Things said in the visit or written in notes never reach the structured fields, so the lists in the chart are incomplete and decision support and reporting work on partial data. Entering it by hand is slow.",
+      "howItWorks": "Reads the transcript and notes and proposes entries for allergies, problems, medications, vitals and procedures, with SNOMED CT or ICD-10 codes where relevant and the passage that supports each one. It compares with what is already in the chart so duplicates and conflicts are flagged. The clinician accepts or rejects each entry, nothing is written without confirmation.",
+      "primitives": [
+        "Medical coding",
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Task extraction",
+      "category": "Clinician-facing",
+      "oneLiner": "Takes the follow-up tasks and carries them out (referrals, forms, booking follow-ups), with approval steps.",
+      "clinicalProblem": "Consultations produce actions that need to happen afterwards (referrals to send, tests to order, follow-up appointments, things to tell the patient), and those get lost today.",
+      "howItWorks": "Takes the transcript and note from the visit and pulls out the actions the clinician decided on (referral to send, test to order, follow-up to book, instruction to the patient). Each action becomes a task with the details filled in from the visit, f.e. a referral form drafted for the receiving clinic. Tasks that send or book anything wait for staff approval. Actions the clinician did not clearly decide on are not extracted. Tasks do not only come from visits: actions also taken from emails, voicemails, or straight from a record entry collect in the same list — each showing the patient and a priority — so the whole practice team works from one task list.",
+      "primitives": [
+        "Agentic framework",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Trainee note feedback",
+      "category": "Clinician-facing",
+      "oneLiner": "Checks a trainee's own note against the consultation and the record and gives teaching feedback, which the supervisor reviews",
+      "clinicalProblem": "Supervisors rarely have time for line-by-line feedback on notes, and trainees write many of them. Doximity found 61% of physicians are concerned about AI's effect on trainees' skills, so a tool that builds the skill instead of replacing it answers a real concern.",
+      "howItWorks": "Takes the trainee's note, written without AI, and the transcript or record. Compares them and lists what is missing, unsupported or unclear, and what a complete note for this case would contain, with the source for each point. The output is written as feedback to the trainee and not as a rewritten note. The supervisor reviews it before it goes to the trainee. It does not score or grade.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Voice commands and auto-texts",
+      "category": "Clinician-facing",
+      "oneLiner": "Lets the clinician set their own voice commands and auto-texts, so a short phrase inserts a saved text block or formatting",
+      "clinicalProblem": "Clinicians say the same phrases and fix the same punctuation and layout over and over, for example standard advice or a normal findings text. Doing it by hand or by retyping costs time on every note.",
+      "howItWorks": "The clinician sets their own trigger phrases that insert a saved text block or script, and uses spoken commands for punctuation and formatting, for example \"comma\", \"question mark\" or \"new paragraph\". The saved text is written by the clinician and inserted exactly as saved. The capability does not add findings of its own. Could later include editing by voice, like \"delete the last sentence\".",
+      "primitives": [
+        "Speech-to-text"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Billing Assistant",
+      "category": "Operations",
+      "oneLiner": "Suggest and automate billing code creation. Before a claim goes out, checks the assigned diagnosis and procedure codes (and DRG) against what the documentation actually supports.",
+      "clinicalProblem": "Codes and notes drift apart: a diagnosis is coded but not documented, or documented but not coded. This leads to under-coding (lost revenue), over-coding (audit and compliance risk) and denials later. Today coders and CDI teams check this by hand, often retrospectively and on a sample only.",
+      "howItWorks": "Takes the note and documentation from the visit and suggests the diagnosis and procedure codes (and DRG) they support, with the passage that justifies each code. Before a claim goes out, re-checks the final codes against the documentation and flags mismatches in both directions (coded but not documented, documented but not coded). Coder or clinician resolves each flag; the claim is not submitted automatically.",
+      "primitives": [
+        "Medical coding",
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Denial management and appeals",
+      "category": "Operations",
+      "oneLiner": "When a claim is denied or an insurer disputes a bill, pulls together the patient record, coverage policy and prior documentation, and drafts the appeal for staff to review and send",
+      "clinicalProblem": "Denied claims and insurer audits cost time and money, and many are never appealed because building the case means going through records, policies and earlier correspondence by hand.",
+      "howItWorks": "Takes the denied claim together with the coverage policy and the patient record. Finds the documentation behind the billed codes and works out what the payer is disputing. Drafts an appeal that answers the denial point by point, citing the record and the policy, and lists the supporting documents to attach. Staff review, edit and send; the capability does not submit anything itself.",
+      "primitives": [
+        "Agentic framework",
+        "Text generation",
+        "Medical coding"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Health Monitoring",
+      "category": "Operations",
+      "oneLiner": "Continuous patient base monitoring and alerting based on health parameters analysis",
+      "clinicalProblem": "Practices hold a steady stream of patient data (results, readings, notes), but nobody can watch all of it. Deterioration and overdue checks are noticed when the patient calls, not from the data, so avoidable problems surface late.",
+      "howItWorks": "An agent runs over the practice's patient data on a schedule and watches the parameters defined per condition (lab values, readings, overdue intervals). When a patient crosses a threshold or shows a worrying trend, it creates an alert with the values and the relevant context from the record. Alerts go to staff, who decide what to do; the capability does not contact patients.",
+      "primitives": [
+        "Agentic framework",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Inbox assistant",
+      "category": "Operations",
+      "oneLiner": "Ranks all practice emails and voicemails in one pass, then per message extracts intent, fields and tasks and drafts the reply",
+      "clinicalProblem": "The practice team reads and sorts every incoming message to decide what is urgent; same-day cancellations and urgent requests sit unnoticed, and reply drafting and task juggling eat staff hours every day.",
+      "howItWorks": "One pass ranks all emails and voicemails high/medium/low with a one-line reason and re-sorts both lists. Selecting a message triggers analysis: what the message wants (e.g. request results, ask a follow-up question), extracted fields, proposed tasks for the team, and a reply draft ready to send. Voicemails arrive as transcripts and work the same way.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Phone Assistant",
+      "category": "Operations",
+      "oneLiner": "AI agent handling inbound/outbound patient calls, bookings, reminders and follow-ups",
+      "clinicalProblem": "Routine patient calls (booking, changing and reminding appointments, answering the same questions, chasing follow-ups) take up staff hours. Lines are busy at peak times, patients wait on hold, and staff time goes to admin instead of the patients in the clinic.",
+      "howItWorks": "Answers inbound calls and makes outbound ones in natural voice. It identifies the caller, handles the routine requests (booking, rescheduling, reminders, instructions) directly in the scheduling system, and answers routine questions from the practice's information. Red-flag symptoms or anything outside its scope are handed to staff with a summary of the call. Every call is transcribed and logged.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Referral intake check",
+      "category": "Operations",
+      "oneLiner": "Reads incoming referrals and faxes, matches them to the patient, checks what is missing and drafts the request back to the referrer",
+      "clinicalProblem": "Referrals arrive as faxes, scans and letters, and many leave out clinically relevant information. Staff read each one, match it to a patient and chase the missing parts by phone or mail.",
+      "howItWorks": "Reads the document, with OCR if it is a scan, and picks out the patient, the referrer, the question asked and the urgency. Checks it against the list of elements the service needs (clinical question, relevant history, medication, allergies, earlier imaging). Missing items are listed and a request back to the referrer is drafted. Staff confirm the patient match and approve the request, nothing is sent automatically.",
+      "primitives": [
+        "Corti Models",
+        "Agentic framework",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Routines",
+      "category": "Operations",
+      "oneLiner": "Runs automatically on a schedule across a whole list of patients, and hands staff an actionable worklist (f.e. pending-results sweep, MDT prep), patient by patient.",
+      "clinicalProblem": "Many recurring jobs are the same check run over many patients (who is overdue for a review, whose results are still pending, who needs a recall). Today these sweeps are done by hand, irregularly, or not at all.",
+      "howItWorks": "An agent runs on a schedule (f.e. every morning) over a patient list or registry. For each patient it checks the record for the condition of the sweep (results still pending, review overdue) and writes a short case summary with the suggested next step. Patients end up on a worklist for staff, sorted by urgency. The agent does not contact patients; staff act on each item.",
+      "primitives": [
+        "Agentic framework",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Scheduling assistant",
+      "category": "Operations",
+      "oneLiner": "Predictive scheduling for HCPs to optimize filling rate and activity split",
+      "clinicalProblem": "Clinic calendars are balanced by hand: urgent cases wait while some slots go unused, and clinicians end up with the wrong mix of activity. Nobody has time to adjust the schedule to demand and no-show patterns, so filling rates stay below what they could be.",
+      "howItWorks": "Learns from the practice's booking history: demand per visit type, visit durations, no-show and cancellation rates. It recommends slot layouts and where to place which visit type, and predicts which bookings are likely to be cancelled. Staff decide what to adopt; existing appointments are not moved on their own. It also answers individual appointment requests in natural language (e.g. \"next week, preferably in the afternoon\"): it looks at the real calendar and suggests up to three free slots, each with a score and a reason; booking a slot files it in the calendar and drafts the confirmation reply.",
+      "primitives": [
+        "Agentic framework",
+        "Corti Models"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "After-visit summary for patients",
+      "category": "Patient-facing",
+      "oneLiner": "Turns the visit into a plain-language summary and instructions for the patient, in their language, approved by the clinician before it is sent",
+      "clinicalProblem": "Patients leave the visit with half-remembered instructions. Writing a patient version by hand takes time, so it is skipped or ends up full of clinical language, and questions come back later.",
+      "howItWorks": "Takes the transcript and the note and picks out the diagnosis in plain words, medication changes, tests, follow-up, and what to watch for and when to get in touch. It is written at a reading level and in the language the patient uses. The clinician reviews and approves before it is sent. Anything that was not said in the visit is not added.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Chat with your own medical record",
+      "category": "Patient-facing",
+      "oneLiner": "Conversational AI supporting patients across their full health journey (preparation, adherence, prevention)",
+      "clinicalProblem": "Patients leave visits with questions they forgot to ask and instructions they half-remember, and their own record is hard to read. Questions pile up until the next appointment or a call to the clinic, and adherence suffers in between.",
+      "howItWorks": "The patient connects their record and asks questions in plain language: what do my results mean, why this medication, what should I do before the surgery. Answers are drawn from the record with the source shown, phrased for a layperson. It does not diagnose or advise treatment; medical questions are referred to the clinician.",
+      "primitives": [
+        "Corti Models",
+        "Text generation"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Patient intake",
+      "category": "Patient-facing",
+      "oneLiner": "Patient answers questions before the visit by text or voice, the questions adapt to the answers, and the result arrives as a structured pre-visit summary.",
+      "clinicalProblem": "The patient's own account (why they are coming, symptoms, medication changes since last time) usually arrives unstructured or not at all, so the first minutes of the visit go to collecting history. Static forms get abandoned and miss the context behind the answers.",
+      "howItWorks": "Sends the patient questions by text or voice before the visit. Each answer decides the next question, so the interview follows the patient's story instead of a fixed form and covers reason for visit, symptoms, medication changes and relevant history. The answers arrive as a structured pre-visit summary for the clinician. The clinician confirms it with the patient; it is a summary, not a diagnosis.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Patient triage",
+      "category": "Patient-facing",
+      "oneLiner": "Assesses a patient's symptoms when they get in touch (phone, chat or app) and directs them to the right level of care, with clear escalation to a clinician on red flags.",
+      "clinicalProblem": "Patients contacting a clinic or helpline need to be directed to the right level of care quickly, and staff time for safe triage is limited. Getting it wrong in either direction is a patient safety and capacity problem.",
+      "howItWorks": "Takes what the patient reports on the call or in chat, transcribed if voice. Asks follow-up questions until enough is known, then maps the picture to a level of care with the reasoning shown. Red-flag answers escalate to a clinician immediately instead of going through the rest of the flow. The outcome is a recommendation for staff; the capability does not diagnose and does not turn anyone away.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": true
+    }
+  ]
+}

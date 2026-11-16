@@ -17,7 +17,7 @@ export function toAgentTaxonomy(caps: Capability[] = CAPABILITIES): string {
   return caps
     .map((c) => {
       const nodeIds = [...c.pipeline.map((p) => p.primitiveId), ...c.connectors.map((x) => x.id), ...c.trust.map((x) => x.id)];
-      return `- ${c.id} | ${c.name} | ${c.category} | does: ${c.outcome} | use when: ${c.whenToUse} | keywords: ${c.keywords.join(", ")} | node ids: ${nodeIds.join(", ")}`;
+      return `- ${c.id} | ${c.name} | ${c.category} | ${c.track === "product" ? "PRODUCT (available today)" : "build-with-us"} | job: ${c.job} | does: ${c.outcome} | use when: ${c.whenToUse} | keywords: ${c.keywords.join(", ")} | node ids: ${nodeIds.join(", ")}`;
     })
     .join("\n");
 }
@@ -30,6 +30,7 @@ export function composerSystemPrompt(): string {
     "",
     "RULES:",
     "- Speak to clinicians, never to developers. No API names, no integration-speak, no jargon.",
+    "- Prefer a PRODUCT capability when it genuinely answers the goal equally well; never force one when a build-with-us capability fits better.",
     "- capabilityId MUST be an exact id from the taxonomy. Never invent capabilities, primitives or URLs.",
     "- goalRestated: their goal in one plain sentence.",
     "- clinicianFraming: a headline of at most 8 words, clinician language, no colon.",

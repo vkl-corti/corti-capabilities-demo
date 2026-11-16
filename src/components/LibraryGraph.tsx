@@ -2,8 +2,9 @@ import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { CAPABILITIES, FEATURED_IDS, PRIMITIVES, getCapability } from "../data/capabilities";
 import type { Capability, ComposerResponse } from "../types";
 
-// Library diagram: the four primitives stacked on the left, every capability
-// on the right, arrows from each primitive to the capabilities built from it.
+// Primitives map: the five primitives stacked on the left, a representative
+// set of capabilities on the right (FEATURED_IDS + whatever is selected),
+// arrows from each primitive to the capabilities built from it.
 //
 // Layout is plain CSS grid/flex — the SVG edges are computed from the REAL
 // rendered positions of the cards (measured relative to the container) and
@@ -311,9 +312,13 @@ export function LibraryGraph({
                     />
                   ))}
                 </span>
-                {!FEATURED_IDS.includes(c.id) && !isMatch && (
-                  <span className="absolute -top-2 right-3 rounded-xs border border-corti-border-tree bg-corti-bg-primary px-1.5 py-px font-mono text-[9.5px] uppercase tracking-mono text-corti-text-secondary">
-                    From full list
+                {!isMatch && (c.track === "product" || !FEATURED_IDS.includes(c.id)) && (
+                  <span
+                    className={`absolute -top-2 right-3 rounded-xs border bg-corti-bg-primary px-1.5 py-px font-mono text-[9.5px] uppercase tracking-mono ${
+                      c.track === "product" ? "border-corti-accent/50 text-corti-accent" : "border-corti-border-tree text-corti-text-secondary"
+                    }`}
+                  >
+                    {c.track === "product" ? "Product" : "Added"}
                   </span>
                 )}
                 {isMatch && (
