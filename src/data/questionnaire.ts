@@ -81,12 +81,12 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: "time",
-    title: "Where does the most time go?",
-    subtitle: "Select up to three, for yourself or for the clinicians you support.",
+    title: "Where do you spend unnecessary time?",
+    subtitle: "Select up to three tasks that take more time than they should, for you or for the clinicians you support.",
     multi: true,
     max: 3,
     weight: 1,
-    reason: (l) => `most time goes to ${lowerFirst(l)}`,
+    reason: (l) => `you spend unnecessary time on ${lowerFirst(l)}`,
     options: [
       {
         id: "notes",
