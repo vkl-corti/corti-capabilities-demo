@@ -3,15 +3,17 @@ import { EXAMPLE_GOALS } from "../data/capabilities";
 
 interface Props {
   onCompose: (goal: string) => void;
+  /** Back to the guided questionnaire. */
+  onGuided?: () => void;
 }
 
-export function GoalInput({ onCompose }: Props) {
+export function GoalInput({ onCompose, onGuided }: Props) {
   const [goal, setGoal] = useState("");
 
   return (
     <section className="cd-dotted flex min-h-[calc(100vh-112px)] items-center px-8 py-16">
       <div className="cd-fade-up mx-auto w-full max-w-2xl">
-        <p className="cd-eyebrow mb-4">Try it yourself</p>
+        <p className="cd-eyebrow mb-4">Describe it yourself</p>
         <h1 className="cd-h1 mb-4">What do you want to get done in your clinic?</h1>
         <p className="cd-lede mb-8 max-w-[52ch]">
           Describe the outcome in your own words. A Corti agent picks the capability and shows the
@@ -46,6 +48,14 @@ export function GoalInput({ onCompose }: Props) {
             </button>
           ))}
         </div>
+        {onGuided && (
+          <p className="mt-12 text-[13px] text-corti-text-tertiary">
+            Not sure what to ask for?{" "}
+            <button type="button" onClick={onGuided} className="text-corti-text-secondary underline decoration-dotted underline-offset-4 hover:text-corti-accent">
+              Answer four quick questions instead
+            </button>
+          </p>
+        )}
       </div>
     </section>
   );

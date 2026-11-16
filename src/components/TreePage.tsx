@@ -46,7 +46,7 @@ export function TreePage({ pinned, onSelect, history, onDay, onTry }: Props) {
             See a day in the clinic
           </button>
           <button type="button" className="cd-btn-primary" onClick={onTry}>
-            Describe your goal →
+            Find what fits you →
           </button>
         </div>
       </section>

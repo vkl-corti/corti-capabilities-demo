@@ -15,9 +15,11 @@ interface Props {
   capabilityId: string;
   onSelect?: (id: string) => void;
   onShowInMap?: (id: string) => void;
+  /** Questionnaire answers that led here → "Why this fits you". */
+  why?: string[];
 }
 
-export function DetailPanel({ result, capabilityId, onSelect, onShowInMap }: Props) {
+export function DetailPanel({ result, capabilityId, onSelect, onShowInMap, why }: Props) {
   const cap = getCapability(capabilityId);
   if (!cap) return null;
   const insights = result?.response.nodeInsights ?? {};
@@ -37,6 +39,14 @@ export function DetailPanel({ result, capabilityId, onSelect, onShowInMap }: Pro
         </div>
         <h2 className="cd-h2 mb-2">{cap.name}</h2>
         <p className="text-[14px] leading-relaxed text-corti-text-secondary">{cap.outcome}</p>
+        {why && why.length > 0 && (
+          <div className="mt-4 rounded-md border border-corti-accent/30 bg-[#121510] px-3.5 py-2.5">
+            <p className="cd-tag mb-1 !text-corti-accent">Why this fits you</p>
+            <p className="text-[13px] leading-relaxed text-corti-text-primary">
+              Because {why.join(" and ")}.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="border-b border-corti-border-faint p-5">

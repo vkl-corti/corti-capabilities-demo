@@ -7,7 +7,7 @@ Four pages, one taxonomy (hash routes, so it works on GitHub Pages):
 | **Capability tree** (home) | `#/` | Capabilities (left) → the primitives they boil down to (right). Click one to read it, see what it's built from and where it leads. Lenses: Highlights (picked for wow-factor), or one *job*: Get it on record, Write it for you, Catch what's missing, Find it fast, Handle the admin. |
 | **A day in the clinic** | `#/day` | Inspiration for clinicians. Pick GP / hospital doctor / surgeon / practice team and walk through an ordinary day, with the capability that helps at each moment. Scenarios live in `src/data/day.ts`. |
 | **All capabilities** | `#/all` | A calm, searchable list: products first, then everything else by job. |
-| **Try it yourself** | `#/try` | A clinician describes a goal; a live Corti agent picks the capability. |
+| **Find what fits you** | `#/try` | Four quick questions (role, where the day goes, familiar situations, what matters most), all statements to react to, no ideas needed. Ends in the visitor's own ranked tree with "why this fits you" per capability and product / build-with-us CTAs. Questions and scoring in `src/data/questionnaire.ts`. Free text with the live Corti agent stays available as an alternative. |
 
 Every capability ends in one of two next steps:
 - **Product** (Scribe, Dictation, Coding, Chat): go straight to the product.

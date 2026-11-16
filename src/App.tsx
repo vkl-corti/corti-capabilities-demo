@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCompose } from "./hooks/useCompose";
 import { useRoute, type Route } from "./hooks/useRoute";
 import { useViewHistory } from "./hooks/useViewHistory";
@@ -6,6 +6,7 @@ import { TreePage } from "./components/TreePage";
 import { DayPage } from "./components/DayPage";
 import { AllPage } from "./components/AllPage";
 import { GoalInput } from "./components/GoalInput";
+import { Questionnaire } from "./components/Questionnaire";
 import { ComposingState } from "./components/ComposingState";
 import { LibraryGraph, ComposeBanner } from "./components/LibraryGraph";
 import { DetailPanel } from "./components/DetailPanel";
@@ -21,12 +22,13 @@ const NAV: { route: Route; label: string }[] = [
 
 export default function App() {
   const { route, navigate } = useRoute();
-  const { phase, result, mode, refreshMode, compose, start } = useCompose();
+  const { phase, result, mode, refreshMode, compose, start, reset } = useCompose();
   const { history, record } = useViewHistory();
   const [activeGoal, setActiveGoal] = useState("");
   const [treePinned, setTreePinned] = useState<string | null>(null);
   const [resultSelected, setResultSelected] = useState<string | null>(null);
   const [drawerId, setDrawerId] = useState<string | null>(null);
+  const [tryKey, setTryKey] = useState(0);
 
   useEffect(() => {
     refreshMode();
@@ -45,14 +47,18 @@ export default function App() {
     else setDrawerId(id);
   };
 
+  const recordMany = useCallback((ids: string[]) => ids.forEach(record), [record]);
+
   const showInTree = (id: string) => {
     setDrawerId(null);
     setTreePinned(id);
     navigate("tree");
   };
 
+  /** Try it yourself = the guided questionnaire (phase "library"); free text is phase "input". */
   const goTry = () => {
-    start();
+    reset();
+    setTryKey((k) => k + 1);
     setResultSelected(null);
     navigate("try");
   };
@@ -90,7 +96,7 @@ export default function App() {
           </nav>
           <div className="flex shrink-0 items-center gap-2">
             <button type="button" className={route === "try" ? "cd-btn cd-btn-sm" : "cd-btn-primary cd-btn-sm"} onClick={goTry}>
-              {route === "try" && phase === "tree" ? "New goal" : "Try it yourself"}
+              {route === "try" ? "Start over" : "Find what fits you"}
             </button>
             <ModeBadge mode={mode} />
           </div>
@@ -105,7 +111,8 @@ export default function App() {
           {route === "day" && <DayPage onOpen={open} onTree={() => navigate("tree")} />}
           {route === "all" && <AllPage onOpen={open} />}
 
-          {route === "try" && (phase === "input" || phase === "library") && <GoalInput onCompose={handleCompose} />}
+          {route === "try" && phase === "library" && <Questionnaire key={tryKey} onFreeText={start} onResult={recordMany} />}
+          {route === "try" && phase === "input" && <GoalInput onCompose={handleCompose} onGuided={reset} />}
           {route === "try" && phase === "composing" && <ComposingState goal={activeGoal} />}
           {route === "try" && phase === "tree" && result && shownCapId && (
             <>

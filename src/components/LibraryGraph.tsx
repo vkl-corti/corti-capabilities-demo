@@ -38,6 +38,8 @@ interface Props {
   onShowAll?: () => void;
   /** Capabilities in the tree before extras; defaults to FEATURED_IDS. */
   baseIds?: string[];
+  /** Keep baseIds order (e.g. ranked results) instead of minimising crossings. */
+  keepOrder?: boolean;
 }
 
 const PRIM_IDS = Object.keys(PRIMITIVES);
@@ -65,6 +67,7 @@ export function LibraryGraph({
   extraCapIds,
   onShowAll,
   baseIds = FEATURED_IDS,
+  keepOrder = false,
 }: Props) {
   // Featured 10 + any extras → the nodes in the tree.
   const extraKey = (extraCapIds ?? []).filter(Boolean).join(",");
@@ -72,8 +75,9 @@ export function LibraryGraph({
   const orderedCaps = useMemo(() => {
     const ids = baseKey ? baseKey.split(",") : [];
     for (const id of extraKey ? extraKey.split(",") : []) if (!ids.includes(id) && getCapability(id)) ids.push(id);
-    return orderCaps(ids.map((id) => getCapability(id)!));
-  }, [extraKey, baseKey]);
+    const caps = ids.map((id) => getCapability(id)!);
+    return keepOrder ? caps : orderCaps(caps);
+  }, [extraKey, baseKey, keepOrder]);
   const capNumber = useMemo(
     () => new Map(orderedCaps.map((c, i) => [c.id, String(i + 1).padStart(2, "0")])),
     [orderedCaps],
