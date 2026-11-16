@@ -2,12 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 
 // Minimal hash router — works on GitHub Pages without server rewrites.
 //   #/        → tree (home)
-//   #/day     → a day in the life
 //   #/all     → all capabilities
 //   #/try     → try it yourself (composer)
 
-export type Route = "tree" | "day" | "all" | "try";
-const ROUTES: Route[] = ["tree", "day", "all", "try"];
+export type Route = "tree" | "all" | "try";
+const ROUTES: Route[] = ["tree", "all", "try"];
 
 function parse(): Route {
   const h = window.location.hash.replace(/^#\/?/, "").split("?")[0];

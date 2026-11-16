@@ -1,11 +1,10 @@
 # Corti — Capabilities demo
 
-Four pages, one taxonomy (hash routes, so it works on GitHub Pages):
+Three pages, one taxonomy (hash routes, so it works on GitHub Pages):
 
 | Page | Route | For |
 | --- | --- | --- |
 | **Capability tree** (home) | `#/` | Capabilities (left) → the primitives they boil down to (right). Click one to read it, see what it's built from and where it leads. Lenses: Highlights (greatest day-to-day impact), or one *job*: Capture & documentation, Drafting & correspondence, Quality & safety checks, Insight & search, Workflow automation. |
-| **A day in the life** | `#/day` | Inspiration, mostly for clinicians. Pick general practitioner / hospital physician / surgeon / practice operations and walk through an ordinary day, with the capability that helps at each moment. Scenarios live in `src/data/day.ts`. |
 | **All capabilities** | `#/all` | A calm, searchable list: products first, then everything else by job. |
 | **Get recommendations** | `#/try` | Four short questions (role, where time is spent unnecessarily, situations that apply, main objective) for clinicians, care organisations, health-tech teams or anyone exploring a build, all statements to react to, no ideas needed. Ends in a list of up to 8 recommendations for inspiration, split into "Available today" and "Build with us", each showing what it does, what it is built from and its own CTA, plus the tree of how they are built. Questions and scoring in `src/data/questionnaire.ts`. Free text with the live Corti agent stays available as an alternative. |
 

@@ -16,11 +16,10 @@ interface Props {
   pinned: string | null;
   onSelect: (id: string | null) => void;
   history: string[];
-  onDay: () => void;
   onTry: () => void;
 }
 
-export function TreePage({ pinned, onSelect, history, onDay, onTry }: Props) {
+export function TreePage({ pinned, onSelect, history, onTry }: Props) {
   const [lens, setLens] = useState<Lens>("highlights");
 
   const baseIds = useMemo(
@@ -42,9 +41,6 @@ export function TreePage({ pinned, onSelect, history, onDay, onTry }: Props) {
           </p>
         </div>
         <div className="flex gap-2">
-          <button type="button" className="cd-btn-ghost" onClick={onDay}>
-            Explore a day in the life
-          </button>
           <button type="button" className="cd-btn-primary" onClick={onTry}>
             Get recommendations →
           </button>

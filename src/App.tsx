@@ -3,7 +3,6 @@ import { useCompose } from "./hooks/useCompose";
 import { useRoute, type Route } from "./hooks/useRoute";
 import { useViewHistory } from "./hooks/useViewHistory";
 import { TreePage } from "./components/TreePage";
-import { DayPage } from "./components/DayPage";
 import { AllPage } from "./components/AllPage";
 import { GoalInput } from "./components/GoalInput";
 import { Questionnaire } from "./components/Questionnaire";
@@ -16,7 +15,6 @@ import { CapabilityDrawer } from "./components/CapabilityDrawer";
 
 const NAV: { route: Route; label: string }[] = [
   { route: "tree", label: "Capability tree" },
-  { route: "day", label: "A day in the life" },
   { route: "all", label: "All capabilities" },
 ];
 
@@ -111,9 +109,8 @@ export default function App() {
       <main className="flex-1">
         <div className="cd-shell min-h-full">
           {route === "tree" && (
-            <TreePage pinned={treePinned} onSelect={open} history={history} onDay={() => navigate("day")} onTry={goTry} />
+            <TreePage pinned={treePinned} onSelect={open} history={history} onTry={goTry} />
           )}
-          {route === "day" && <DayPage onOpen={open} onTree={() => navigate("tree")} />}
           {route === "all" && <AllPage onOpen={open} />}
 
           {route === "try" && phase === "library" && <Questionnaire key={tryKey} onFreeText={start} onResult={recordMany} onOpen={openRecommendation} />}
