@@ -1,20 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 import { QUESTIONS, scoreAnswers, type Answers, type Match } from "../data/questionnaire";
-import { JOBS } from "../data/capabilities";
+import { JOBS, PRIMITIVES } from "../data/capabilities";
 import { ADVANCE_PROGRAM, PRODUCTS } from "../data/products";
 import { LibraryGraph } from "./LibraryGraph";
 
 // Guided recommendations: four quick steps of statements to react to,
 // then a ranked list of recommendations for inspiration (products and
-// build-with-us), each with why it was picked, and the tree of how they're built.
+// build-with-us), each showing what it does and what it's built from, and
+// the tree of how they're built.
 
 interface Props {
   /** Switch to free-text + AI composer. */
   onFreeText: () => void;
   /** Called once with the top picks (feeds history / recommendations). */
   onResult: (ids: string[]) => void;
-  /** Open a capability's detail, with the reasons it was recommended. */
-  onOpen: (id: string, why?: string[]) => void;
+  /** Open a capability's detail. */
+  onOpen: (id: string) => void;
 }
 
 export function Questionnaire({ onFreeText, onResult, onOpen }: Props) {
@@ -136,7 +137,7 @@ function Result({
   onEdit: () => void;
   onRestart: () => void;
   onResult: (ids: string[]) => void;
-  onOpen: (id: string, why?: string[]) => void;
+  onOpen: (id: string) => void;
 }) {
   const matches = useMemo(() => scoreAnswers(answers, 8), [answers]);
   const ids = matches.map((m) => m.capability.id);
@@ -148,7 +149,6 @@ function Result({
     window.scrollTo({ top: 0 });
   }, [idsKey, onResult]);
 
-  const answerChips = QUESTIONS.flatMap((q) => (answers[q.id] ?? []).map((id) => q.options.find((o) => o.id === id)?.label ?? id));
   const products = matches.filter((m) => m.capability.track === "product");
   const custom = matches.filter((m) => m.capability.track === "custom");
 
@@ -179,12 +179,16 @@ function Result({
           </div>
           <h3 className="font-sans text-[18px] font-medium leading-tight">{c.name}</h3>
           <p className="mt-1 text-[13.5px] leading-snug text-corti-text-secondary">{c.short}</p>
+          <p className="mt-2 text-[13px] leading-relaxed text-corti-text-tertiary">{c.outcome}</p>
         </div>
-        {m.because.length > 0 && (
-          <p className="border-l-2 border-corti-accent/60 pl-3 text-[12.5px] leading-relaxed text-corti-text-tertiary">
-            Because {m.because.join(" and ")}.
-          </p>
-        )}
+        <div className="flex flex-wrap items-center gap-1">
+          <span className="mr-1 text-[11.5px] text-corti-text-tertiary">Built from</span>
+          {c.pipeline.map((s) => (
+            <span key={s.primitiveId} className="rounded-full border border-corti-border-faint px-2 py-px font-mono text-[10.5px] text-corti-text-tertiary">
+              {PRIMITIVES[s.primitiveId]?.name ?? s.primitiveId}
+            </span>
+          ))}
+        </div>
         <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
           {p ? (
             <a href={p.href} target="_blank" rel="noreferrer" className="cd-btn-primary cd-btn-sm">
@@ -202,7 +206,7 @@ function Result({
           )}
           <button
             type="button"
-            onClick={() => onOpen(c.id, m.because)}
+            onClick={() => onOpen(c.id)}
             className="text-[12.5px] text-corti-text-tertiary underline decoration-dotted underline-offset-4 hover:text-corti-text-primary"
           >
             How it works
@@ -222,15 +226,9 @@ function Result({
             </p>
             <h1 className="cd-h1 mb-2">Where Corti can help</h1>
             <p className="cd-lede mb-4 max-w-[60ch]">
-              {matches.length} capabilities selected from your answers, for inspiration. Explore any of them, or bring them to a conversation with us.
+              {matches.length} capabilities that could support your work, and how each one is built. Explore any of them, or bring them to a
+              conversation with us.
             </p>
-            <div className="flex max-w-[820px] flex-wrap gap-1.5">
-              {answerChips.map((c) => (
-                <span key={c} className="rounded-full border border-corti-border-faint px-2.5 py-0.5 text-[12px] text-corti-text-tertiary">
-                  {c}
-                </span>
-              ))}
-            </div>
           </div>
           <div className="flex gap-2">
             <button type="button" className="cd-btn-ghost cd-btn-sm" onClick={onEdit}>
@@ -270,9 +268,9 @@ function Result({
       <section className="px-8 pb-10 pt-12">
         <p className="cd-eyebrow mb-1">How these are built</p>
         <p className="mb-5 text-[13.5px] text-corti-text-tertiary">
-          All of your recommendations come from the same primitives. Hover a card above or a capability below to trace it.
+          Every recommendation is composed from the same primitives. Hover a card above or a capability below to trace it.
         </p>
-        <LibraryGraph baseIds={ids} keepOrder highlightedCapId={hovered} onSelectCapability={(id) => onOpen(id, matches.find((m) => m.capability.id === id)?.because)} />
+        <LibraryGraph baseIds={ids} keepOrder highlightedCapId={hovered} onSelectCapability={onOpen} />
       </section>
     </>
   );

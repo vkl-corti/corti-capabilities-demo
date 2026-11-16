@@ -28,7 +28,6 @@ export default function App() {
   const [treePinned, setTreePinned] = useState<string | null>(null);
   const [resultSelected, setResultSelected] = useState<string | null>(null);
   const [drawerId, setDrawerId] = useState<string | null>(null);
-  const [drawerWhy, setDrawerWhy] = useState<string[] | undefined>(undefined);
   const [tryKey, setTryKey] = useState(0);
 
   useEffect(() => {
@@ -45,15 +44,11 @@ export default function App() {
     if (id) record(id);
     if (route === "tree") setTreePinned(id);
     else if (route === "try" && phase === "tree") setResultSelected(id);
-    else {
-      setDrawerWhy(undefined);
-      setDrawerId(id);
-    }
+    else setDrawerId(id);
   };
 
-  const openRecommendation = (id: string, why?: string[]) => {
+  const openRecommendation = (id: string) => {
     record(id);
-    setDrawerWhy(why);
     setDrawerId(id);
   };
 
@@ -151,7 +146,7 @@ export default function App() {
         </div>
       </main>
 
-      <CapabilityDrawer capabilityId={drawerId} why={drawerWhy} onClose={() => setDrawerId(null)} onSelect={open} onShowInMap={showInTree} />
+      <CapabilityDrawer capabilityId={drawerId} onClose={() => setDrawerId(null)} onSelect={open} onShowInMap={showInTree} />
 
       <footer className="border-t border-corti-border-faint">
         <div className="cd-shell flex h-12 items-center justify-between px-8">
