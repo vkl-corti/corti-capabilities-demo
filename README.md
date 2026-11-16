@@ -1,21 +1,18 @@
 # Corti — Capabilities demo
 
-Capability first, primitives second. The landing opens on what you can get
-done, not on what it's built from:
+Four pages, one taxonomy (hash routes, so it works on GitHub Pages):
 
-1. **Use today:** the four products (Scribe, Dictation, Coding, Chat).
-   Each links straight to the product.
-2. **For you:** recommendations from what this visitor has opened.
-3. **Build with us:** every other capability, grouped by *job* (Capture,
-   Write, Check, Understand, Automate). Opening one shows the problem, how it
-   works, then **boils it down** to the primitives it is built from. The
-   CTA leads to the **Advance program** (build it with Corti, tailored).
-4. **Under the hood:** the primitives map. Hover to trace any capability back
-   to its building blocks.
+| Page | Route | For |
+| --- | --- | --- |
+| **Capability tree** (home) | `#/` | Primitives → capabilities. Click one to read it, see what it's built from and where it leads. Lenses: Highlights, or one *job* (Capture, Write, Check, Understand, Automate). |
+| **A day in the clinic** | `#/day` | Inspiration for clinicians. Pick GP / hospital doctor / surgeon / practice team and walk through an ordinary day, with the capability that helps at each moment. Scenarios live in `src/data/day.ts`. |
+| **All capabilities** | `#/all` | A calm, searchable list: products first, then everything else by job. |
+| **Try it yourself** | `#/try` | A clinician describes a goal; a live Corti agent picks the capability. |
 
-"Try it yourself" hands over to the composer: a clinician says what they want
-to get done, a real Corti agent maps it to a capability, and the same
-breakdown and CTA appear for the match.
+Every capability ends in one of two next steps:
+- **Product** (Scribe, Dictation, Coding, Chat): go straight to the product.
+- **Build with us**: explained and boiled down to primitives, with a CTA to the
+  **Advance program** (built with Corti, tailored to the customer).
 
 ## Run it
 
@@ -137,5 +134,5 @@ capability in one group, and import/transform stays filterable on top.
 It is pure and deterministic, scoring by shared primitives (rare ones
 weighted higher), same job, shared inputs and same user group. With no
 history it puts products first. The demo feeds it from localStorage
-(`useViewHistory`). In production, pass any history source (analytics, CRM,
+(`useViewHistory`) and shows it as "Suggested for you" on the tree and "Related" in the detail drawer. In production, pass any history source (analytics, CRM,
 product usage); the function doesn't care.

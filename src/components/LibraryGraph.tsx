@@ -36,6 +36,8 @@ interface Props {
   extraCapIds?: (string | null | undefined)[];
   /** Opens the full capability list. */
   onShowAll?: () => void;
+  /** Capabilities in the tree before extras; defaults to FEATURED_IDS. */
+  baseIds?: string[];
 }
 
 const PRIM_IDS = Object.keys(PRIMITIVES);
@@ -62,14 +64,16 @@ export function LibraryGraph({
   onSelectCapability,
   extraCapIds,
   onShowAll,
+  baseIds = FEATURED_IDS,
 }: Props) {
   // Featured 10 + any extras → the nodes in the tree.
   const extraKey = (extraCapIds ?? []).filter(Boolean).join(",");
+  const baseKey = baseIds.join(",");
   const orderedCaps = useMemo(() => {
-    const ids = [...FEATURED_IDS];
+    const ids = baseKey ? baseKey.split(",") : [];
     for (const id of extraKey ? extraKey.split(",") : []) if (!ids.includes(id) && getCapability(id)) ids.push(id);
     return orderCaps(ids.map((id) => getCapability(id)!));
-  }, [extraKey]);
+  }, [extraKey, baseKey]);
   const capNumber = useMemo(
     () => new Map(orderedCaps.map((c, i) => [c.id, String(i + 1).padStart(2, "0")])),
     [orderedCaps],
@@ -312,7 +316,7 @@ export function LibraryGraph({
                     />
                   ))}
                 </span>
-                {!isMatch && (c.track === "product" || !FEATURED_IDS.includes(c.id)) && (
+                {!isMatch && (c.track === "product" || !baseIds.includes(c.id)) && (
                   <span
                     className={`absolute -top-2 right-3 rounded-xs border bg-corti-bg-primary px-1.5 py-px font-mono text-[9.5px] uppercase tracking-mono ${
                       c.track === "product" ? "border-corti-accent/50 text-corti-accent" : "border-corti-border-tree text-corti-text-secondary"

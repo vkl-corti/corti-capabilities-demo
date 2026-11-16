@@ -66,7 +66,7 @@ export function DetailPanel({ result, capabilityId, onSelect, onShowInMap }: Pro
               onClick={() => onShowInMap(cap.id)}
               className="font-mono text-[11px] text-corti-text-tertiary underline decoration-dotted underline-offset-4 hover:text-corti-accent"
             >
-              Show in map ↓
+              See it in the tree →
             </button>
           )}
         </div>
