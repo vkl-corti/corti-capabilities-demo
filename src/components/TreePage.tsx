@@ -5,7 +5,7 @@ import type { Job } from "../types";
 import { DetailPanel, TrackBadge } from "./DetailPanel";
 import { LibraryGraph } from "./LibraryGraph";
 
-// Home: the tree. Primitives on the left, capabilities on the right; click a
+// Home: the tree. Capabilities on the left, the primitives they are built from on the right; click a
 // capability to read it, see what it's built from and where it leads.
 // Lenses swap which capabilities are in the tree (highlights, or one job).
 

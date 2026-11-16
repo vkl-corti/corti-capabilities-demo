@@ -2,9 +2,9 @@ import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { CAPABILITIES, FEATURED_IDS, PRIMITIVES, getCapability } from "../data/capabilities";
 import type { Capability, ComposerResponse } from "../types";
 
-// Primitives map: the five primitives stacked on the left, a representative
-// set of capabilities on the right (FEATURED_IDS + whatever is selected),
-// arrows from each primitive to the capabilities built from it.
+// Capability tree: capabilities on the left (FEATURED_IDS / the active lens +
+// whatever is selected), the five primitives they boil down to on the right,
+// arrows from each capability to the primitives it is built from.
 //
 // Layout is plain CSS grid/flex — the SVG edges are computed from the REAL
 // rendered positions of the cards (measured relative to the container) and
@@ -155,7 +155,7 @@ export function LibraryGraph({
     }
     const cy = (r: Rect) => r.y + r.h / 2;
 
-    // Source ports: spread over the primitive's right edge, ordered by target y.
+    // Primitive ports: spread over the primitive's left edge, ordered by capability y.
     const outPort = new Map<string, number>();
     for (const pid of PRIM_IDS) {
       const out = raw.filter((e) => e.from === pid).sort((a, b) => cy(geo.caps[a.to]) - cy(geo.caps[b.to]));
@@ -167,7 +167,7 @@ export function LibraryGraph({
         outPort.set(`${e.from}->${e.to}`, cy(r) - span / 2 + t * span);
       });
     }
-    // Target ports: spread over the capability's left edge, ordered by source y.
+    // Capability ports: spread over the capability's right edge, ordered by primitive y.
     const inPort = new Map<string, number>();
     for (const cap of orderedCaps) {
       const inc = raw.filter((e) => e.to === cap.id).sort((a, b) => cy(geo.prims[a.from]) - cy(geo.prims[b.from]));
@@ -184,10 +184,11 @@ export function LibraryGraph({
       const p = geo.prims[e.from];
       const c = geo.caps[e.to];
       const id = `${e.from}->${e.to}`;
-      const x1 = p.x + p.w;
-      const y1 = outPort.get(id)!;
-      const x2 = c.x - ARROW;
-      const y2 = inPort.get(id)!;
+      // Capability (left) → primitive (right): "boils down to".
+      const x1 = c.x + c.w;
+      const y1 = inPort.get(id)!;
+      const x2 = p.x - ARROW;
+      const y2 = outPort.get(id)!;
       const dx = Math.max(24, (x2 - x1) * 0.5);
       return {
         ...e,
@@ -201,14 +202,14 @@ export function LibraryGraph({
   return (
     <div ref={containerRef} className="relative">
       {/* Column headers */}
-      <div className="mb-3 grid grid-cols-[minmax(210px,260px)_minmax(72px,1fr)_minmax(280px,1.5fr)] items-end">
-        <p className="cd-eyebrow">
-          <span className="text-corti-text-tertiary">A /</span> Primitives
+      <div className="mb-3 grid grid-cols-[minmax(280px,1.5fr)_minmax(72px,1fr)_minmax(210px,260px)] items-end">
+        <p className="cd-eyebrow col-start-3 row-start-1">
+          <span className="text-corti-text-tertiary">B /</span> Built from
         </p>
-        <span />
-        <p className="cd-eyebrow flex items-center justify-between">
+        <span className="col-start-2 row-start-1" />
+        <p className="cd-eyebrow col-start-1 row-start-1 flex items-center justify-between">
           <span>
-            <span className="text-corti-text-tertiary">B /</span> What they build
+            <span className="text-corti-text-tertiary">A /</span> Capabilities
           </span>
           <span className="flex items-center gap-3">
             <span className="cd-tag normal-case">
@@ -227,9 +228,9 @@ export function LibraryGraph({
         </p>
       </div>
 
-      <div className="grid grid-cols-[minmax(210px,260px)_minmax(72px,1fr)_minmax(280px,1.5fr)]">
-        {/* Primitives — stretched to the full height of the capability column */}
-        <div className="flex flex-col justify-between gap-3">
+      <div className="grid grid-cols-[minmax(280px,1.5fr)_minmax(72px,1fr)_minmax(210px,260px)]">
+        {/* Primitives (right column) — stretched to the full height of the capability column */}
+        <div className="col-start-3 row-start-1 flex flex-col justify-between gap-3">
           {PRIM_IDS.map((id, idx) => {
             const p = PRIMITIVES[id];
             const hi = primIsHi(id);
@@ -253,7 +254,7 @@ export function LibraryGraph({
                     {String(idx + 1).padStart(2, "0")} · Primitive
                   </span>
                   <span className="cd-tag normal-case" title={`Used by ${uses} capabilities`}>
-                    → {uses}
+                    ← {uses}
                   </span>
                 </div>
                 <a
@@ -272,10 +273,10 @@ export function LibraryGraph({
         </div>
 
         {/* Edge gutter (the SVG overlays the whole grid) */}
-        <div aria-hidden />
+        <div aria-hidden className="col-start-2 row-start-1" />
 
-        {/* Capabilities — spread to the same height as the primitive column so both end level */}
-        <div className="flex flex-col justify-between gap-1.5">
+        {/* Capabilities (left column) — spread to the same height as the primitive column so both end level */}
+        <div className="col-start-1 row-start-1 flex flex-col justify-between gap-1.5">
           {orderedCaps.map((c) => {
             const hi = capIsHi(c.id);
             const dim = anyActive && !hi;

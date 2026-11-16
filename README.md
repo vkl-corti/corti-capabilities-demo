@@ -4,7 +4,7 @@ Four pages, one taxonomy (hash routes, so it works on GitHub Pages):
 
 | Page | Route | For |
 | --- | --- | --- |
-| **Capability tree** (home) | `#/` | Primitives → capabilities. Click one to read it, see what it's built from and where it leads. Lenses: Highlights, or one *job* (Capture, Write, Check, Understand, Automate). |
+| **Capability tree** (home) | `#/` | Capabilities (left) → the primitives they boil down to (right). Click one to read it, see what it's built from and where it leads. Lenses: Highlights, or one *job* (Capture, Write, Check, Understand, Automate). |
 | **A day in the clinic** | `#/day` | Inspiration for clinicians. Pick GP / hospital doctor / surgeon / practice team and walk through an ordinary day, with the capability that helps at each moment. Scenarios live in `src/data/day.ts`. |
 | **All capabilities** | `#/all` | A calm, searchable list: products first, then everything else by job. |
 | **Try it yourself** | `#/try` | A clinician describes a goal; a live Corti agent picks the capability. |
