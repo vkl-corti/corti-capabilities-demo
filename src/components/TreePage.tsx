@@ -10,6 +10,7 @@ import { LibraryGraph } from "./LibraryGraph";
 // Lenses swap which capabilities are in the tree (highlights, or one job).
 
 type Lens = "highlights" | Job;
+const HIGHLIGHTS_HINT = "The ones that change a clinician's day the most";
 
 interface Props {
   pinned: string | null;
@@ -63,7 +64,7 @@ export function TreePage({ pinned, onSelect, history, onDay, onTry }: Props) {
                   const next = l === "highlights" ? FEATURED_IDS : CAPABILITIES.filter((c) => c.job === l).map((c) => c.id);
                   if (pinned && !next.includes(pinned)) onSelect(null);
                 }}
-                title={l === "highlights" ? "A representative selection" : JOBS[l].verb}
+                title={l === "highlights" ? HIGHLIGHTS_HINT : JOBS[l].verb}
                 className={`rounded-full border px-3 py-1 text-[13px] transition-colors ${
                   lens === l
                     ? "border-corti-accent text-corti-accent"
@@ -74,7 +75,7 @@ export function TreePage({ pinned, onSelect, history, onDay, onTry }: Props) {
               </button>
             ))}
             <span className="ml-2 text-[12.5px] text-corti-text-tertiary">
-              {lens === "highlights" ? "A selection across everything" : JOBS[lens].verb}
+              {lens === "highlights" ? HIGHLIGHTS_HINT : JOBS[lens].verb}
             </span>
           </div>
           <div className="flex items-center gap-4 text-[12px] text-corti-text-tertiary">

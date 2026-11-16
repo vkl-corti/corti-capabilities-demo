@@ -71,11 +71,11 @@ const NOTION_PRIMITIVE: Record<string, string> = {
 
 /** Jobs in catalogue order. `flow` is the design team's import/transform split. */
 export const JOBS: Record<Job, { label: string; verb: string; flow: Flow }> = {
-  capture: { label: "Capture", verb: "Gets information into the record", flow: "import" },
-  write: { label: "Write", verb: "Turns the record into documents and messages", flow: "transform" },
-  check: { label: "Check", verb: "Compares against a reference and flags gaps", flow: "transform" },
-  understand: { label: "Understand", verb: "Summarises, searches and answers", flow: "transform" },
-  automate: { label: "Automate", verb: "Runs the follow-up work", flow: "act" },
+  capture: { label: "Get it on record", verb: "Conversations, dictation and incoming documents into the record, without typing", flow: "import" },
+  write: { label: "Write it for you", verb: "Letters, forms and replies drafted from the record, ready for your signature", flow: "transform" },
+  check: { label: "Catch what's missing", verb: "Gaps, conflicts and errors spotted before they cause trouble", flow: "transform" },
+  understand: { label: "Find it fast", verb: "Answers and summaries from the record, with the source shown", flow: "transform" },
+  automate: { label: "Handle the admin", verb: "Calls, inbox, worklists and follow-ups taken off your plate", flow: "act" },
 };
 export const JOB_ORDER: Job[] = ["capture", "write", "check", "understand", "automate"];
 
@@ -207,7 +207,7 @@ const EDITORIAL: Record<string, Editorial> = {
   },
   "Consultation interpreter": {
     id: "consultation-interpreter",
-    short: "Live translation, note in your language",
+    short: "Talk to any patient, note in your language",
     job: "capture",
     inputs: ["conversation"],
     keywords: ["translate", "translation", "interpreter", "language", "languages", "foreign", "non-native", "multilingual"],
@@ -310,7 +310,7 @@ const EDITORIAL: Record<string, Editorial> = {
   },
   "Reply drafting in your own style": {
     id: "reply-drafting",
-    short: "Patient replies, in your voice",
+    short: "Patient replies that sound like you",
     job: "write",
     inputs: ["messages", "record"],
     keywords: ["reply", "replies", "e-consultation", "portal message", "patient question", "respond", "message", "writing style"],
@@ -377,7 +377,7 @@ const EDITORIAL: Record<string, Editorial> = {
   },
   "Patient AI conversation review": {
     id: "patient-ai-review",
-    short: "Patients' AI chats checked against their record",
+    short: "When patients bring ChatGPT's diagnosis",
     job: "check",
     inputs: ["patient", "record"],
     keywords: ["chatgpt", "ai chat", "self-diagnosis", "patient research", "dr google", "claims", "talking points"],
@@ -510,7 +510,7 @@ const EDITORIAL: Record<string, Editorial> = {
   },
   "End-of-day catch-up": {
     id: "end-of-day",
-    short: "Everything still open, ready to sign",
+    short: "Go home on time: everything open, ready to sign",
     job: "automate",
     inputs: ["record"],
     keywords: ["end of day", "after hours", "unsigned notes", "open tasks", "pajama time", "catch up", "sign off", "backlog"],
@@ -711,18 +711,19 @@ export const PRODUCT_CAPABILITIES = PRODUCT_ORDER.map((pid) => CAPABILITIES.find
 );
 export const CUSTOM_CAPABILITIES = CAPABILITIES.filter((c) => c.track === "custom");
 
-/** Shown in the primitives map by default: the products + one example per job. */
+/** "Highlights" lens in the tree: the capabilities most likely to make a
+ *  clinician stop and look. Chosen for wow-factor, not for coverage. */
 export const FEATURED_IDS: string[] = [
   "ambient-scribe",
-  "medical-dictation",
-  "billing-assistant",
-  "medical-knowledge-assistant",
-  "patient-intake",
-  "document-generation",
-  "medication-reconciliation",
+  "consultation-interpreter",
+  "patient-ai-review",
+  "anatomy-overview",
   "patient-at-a-glance",
+  "end-of-day",
+  "reply-drafting",
+  "shift-handover",
+  "medical-knowledge-assistant",
   "phone-assistant",
-  "task-extraction",
 ];
 
 /** Example goal chips on the "try it yourself" screen — a mix of product and build-with-us matches. */

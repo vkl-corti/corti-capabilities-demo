@@ -202,7 +202,7 @@ export function LibraryGraph({
   return (
     <div ref={containerRef} className="relative">
       {/* Column headers */}
-      <div className="mb-3 grid grid-cols-[minmax(280px,1.5fr)_minmax(72px,1fr)_minmax(210px,260px)] items-end">
+      <div className="mb-3 grid grid-cols-[minmax(300px,2fr)_minmax(56px,0.7fr)_minmax(210px,240px)] items-end">
         <p className="cd-eyebrow col-start-3 row-start-1">
           <span className="text-corti-text-tertiary">B /</span> Built from
         </p>
@@ -228,7 +228,7 @@ export function LibraryGraph({
         </p>
       </div>
 
-      <div className="grid grid-cols-[minmax(280px,1.5fr)_minmax(72px,1fr)_minmax(210px,260px)]">
+      <div className="grid grid-cols-[minmax(300px,2fr)_minmax(56px,0.7fr)_minmax(210px,240px)]">
         {/* Primitives (right column) — stretched to the full height of the capability column */}
         <div className="col-start-3 row-start-1 flex flex-col justify-between gap-3">
           {PRIM_IDS.map((id, idx) => {
