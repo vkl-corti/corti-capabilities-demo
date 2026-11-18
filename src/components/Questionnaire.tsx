@@ -222,7 +222,7 @@ function Result({
         <div className="cd-fade-up flex flex-wrap items-end justify-between gap-6">
           <div className="min-w-0">
             <p className="cd-eyebrow mb-3 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-corti-accent" /> Your recommendations
+              <span className="h-1.5 w-1.5 rounded-full bg-corti-accent" /> Matched to your priorities
             </p>
             <h1 className="cd-h1 mb-2">Where Corti can help</h1>
             <p className="cd-lede mb-4 max-w-[60ch]">

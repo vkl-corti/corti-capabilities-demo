@@ -33,10 +33,10 @@ export function TreePage({ pinned, onSelect, history, onTry, onShowAll }: Props)
       <section className="cd-rule flex flex-wrap items-end justify-between gap-6 px-8 py-7">
         <div className="cd-fade-up">
           <p className="cd-eyebrow mb-3">Corti capability map</p>
-          <h1 className="cd-h1 mb-3 !text-[36px] xl:!text-[40px]">Every capability starts with the same building blocks.</h1>
+          <h1 className="cd-h1 mb-3 !text-[36px] xl:!text-[40px]">Explore everything Corti makes possible.</h1>
           <p className="cd-lede max-w-[62ch]">
-            See what Corti delivers today and what we build together with partners. Select any capability to trace it back to the
-            primitives it is composed from.
+            From documentation to admin, every capability is composed from the same building blocks, available today or built
+            together with partners. Select one to see how it is made.
           </p>
         </div>
         <div className="flex gap-2">
@@ -44,7 +44,7 @@ export function TreePage({ pinned, onSelect, history, onTry, onShowAll }: Props)
             View all capabilities
           </button>
           <button type="button" className="cd-btn-primary" onClick={onTry}>
-            Get recommendations →
+            Match to your priorities →
           </button>
         </div>
       </section>

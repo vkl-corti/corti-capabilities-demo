@@ -99,7 +99,7 @@ export default function App() {
           </nav>
           <div className="flex shrink-0 items-center gap-2">
             <button type="button" className={route === "try" ? "cd-btn cd-btn-sm" : "cd-btn-primary cd-btn-sm"} onClick={goTry}>
-              {route === "try" ? "Start over" : "Get recommendations"}
+              {route === "try" ? "Start over" : "Match to your priorities"}
             </button>
             <ModeBadge mode={mode} />
           </div>

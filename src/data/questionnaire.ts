@@ -41,7 +41,7 @@ export const QUESTIONS: Question[] = [
   {
     id: "role",
     title: "Which best describes your role?",
-    subtitle: "We use this to tailor the recommendations.",
+    subtitle: "We use this to match capabilities to your work.",
     multi: false,
     weight: 1,
     options: [
