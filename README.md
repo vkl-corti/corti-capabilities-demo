@@ -6,7 +6,7 @@ Three pages, one taxonomy (hash routes, so it works on GitHub Pages):
 | --- | --- | --- |
 | **Capability tree** (home) | `#/` | Capabilities (left) → the building blocks they are composed from (right). Select one to read it, see what it is built from and where it leads. Lenses: **Highlights** (top of the priority list) or one group: Documentation, Intake & data, Drafting, Quality & safety, Insight & search, Admin & automation. |
 | **All capabilities** | `#/all` | The full list: products first, then everything else by group, in priority order. Filter by user group or search. Linked from the home page. |
-| **Match to your priorities** | `#/try` | Four short questions (role, where time is spent unnecessarily, situations that apply, main objective) for clinicians, care organisations, health-tech teams or anyone exploring a build, all statements to react to, no ideas needed. Ends in a list of up to 8 recommendations for inspiration, split into "Available today" and "Build with us", each showing what it does, what it is built from and its own CTA, plus the tree of how they are built. Questions and scoring in `src/data/questionnaire.ts`. Free text with the live Corti agent stays available as an alternative. |
+| **Match to your priorities** | `#/try` | Four short steps (role, where time is lost, situations, main objective). Options and wording adapt to the role picked in step 1: clinicians, practice teams, health-system leaders and health-tech product teams each see their own set. Ends in the visitor's own capability map (same layout as the home page) with a next-steps panel: products to start with today and the build-with-us capabilities to explore with Corti. Deterministic scoring in the browser, no LLM; questions, roles and weights in `src/data/questionnaire.ts`. Free text with the live Corti agent stays available as an alternative. |
 
 Every capability ends in one of two next steps:
 - **Product** (Scribe, Dictation, Coding, Chat): available today, go straight to the product.
@@ -95,7 +95,9 @@ Excluded: rows ticked **Backlog** (Care Plan Assistant, Diagnosis assistant,
 Patient triage), and **AI review trail**, which is a trust-layer item on
 every capability instead of a card (as its Notion note suggests).
 
-Re-sync = re-export the snapshot, then fill any warnings.
+Re-sync = re-export the snapshot, then fill any warnings. The questionnaire is checked against the same list on load: unknown ids in its answers, and capabilities no answer can reach, are warned about in the console.
+
+Where a Notion one-liner reads like an internal note (e.g. "HCP", fragments), the editorial layer sets a polished `pitch` that is shown instead. Fixing those one-liners in Notion is the lasting fix.
 
 ## Products vs. build-with-us
 

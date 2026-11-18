@@ -1,45 +1,50 @@
 import { useEffect, useMemo, useState } from "react";
-import { QUESTIONS, scoreAnswers, type Answers, type Match } from "../data/questionnaire";
-import { JOBS, PRIMITIVES } from "../data/capabilities";
+import { QUESTIONS, questionCopy, roleOf, scoreAnswers, visibleOptions, type Answers } from "../data/questionnaire";
 import { ADVANCE_PROGRAM, PRODUCTS } from "../data/products";
+import { DetailPanel } from "./DetailPanel";
 import { LibraryGraph } from "./LibraryGraph";
 
-// Guided recommendations: four quick steps of statements to react to,
-// then a ranked list of recommendations for inspiration (products and
-// build-with-us), each showing what it does and what it's built from, and
-// the tree of how they're built.
+// "Match to your priorities": four quick steps of statements to react to,
+// shaped by the role picked in step 1, then the visitor's own capability map
+// (same layout as the home page) with their next steps beside it.
 
 interface Props {
   /** Switch to free-text + AI composer. */
   onFreeText: () => void;
   /** Called once with the top picks (feeds history / recommendations). */
   onResult: (ids: string[]) => void;
-  /** Open a capability's detail. */
-  onOpen: (id: string) => void;
 }
 
-export function Questionnaire({ onFreeText, onResult, onOpen }: Props) {
+export function Questionnaire({ onFreeText, onResult }: Props) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
-  const done = step >= QUESTIONS.length;
 
-  if (done) return <Result answers={answers} onEdit={() => setStep(0)} onRestart={() => {
-          setAnswers({});
-          setStep(0);
-        }} onResult={onResult} onOpen={onOpen} />;
+  if (step >= QUESTIONS.length) {
+    return (
+      <Result
+        answers={answers}
+        onEdit={() => setStep(0)}
+        onResult={onResult}
+      />
+    );
+  }
 
   const q = QUESTIONS[step];
-  const picked = answers[q.id] ?? [];
+  const role = roleOf(answers);
+  const { title, subtitle } = questionCopy(q, role);
+  const options = visibleOptions(q, role);
+  const picked = (answers[q.id] ?? []).filter((id) => options.some((o) => o.id === id));
   const canNext = q.multi ? q.id === "situations" || picked.length > 0 : picked.length === 1;
 
   const toggle = (id: string) => {
     if (!q.multi) {
-      setAnswers((a) => ({ ...a, [q.id]: [id] }));
+      // A new role resets later answers: the options differ per role.
+      setAnswers((a) => (q.id === "role" && a.role?.[0] !== id ? { role: [id] } : { ...a, [q.id]: [id] }));
       setTimeout(() => setStep((s) => s + 1), 180); // auto-advance on single choice
       return;
     }
     setAnswers((a) => {
-      const cur = a[q.id] ?? [];
+      const cur = (a[q.id] ?? []).filter((x) => options.some((o) => o.id === x));
       if (cur.includes(id)) return { ...a, [q.id]: cur.filter((x) => x !== id) };
       if (q.max && cur.length >= q.max) return a;
       return { ...a, [q.id]: [...cur, id] };
@@ -47,23 +52,25 @@ export function Questionnaire({ onFreeText, onResult, onOpen }: Props) {
   };
 
   return (
-    <section className="cd-dotted flex min-h-[calc(100vh-112px)] items-start px-8 py-14">
+    <section className="cd-dotted flex min-h-[calc(100vh-112px)] items-start px-8 py-12">
       <div key={q.id} className="cd-fade-up mx-auto w-full max-w-[780px]">
-        {/* Progress */}
-        <div className="mb-8 flex items-center gap-3">
+        {/* Progress, labelled */}
+        <ol className="mb-8 grid grid-cols-4 gap-3">
           {QUESTIONS.map((x, i) => (
-            <span key={x.id} className={`h-1 flex-1 rounded-full ${i <= step ? "bg-corti-accent" : "bg-corti-border-faint"}`} />
+            <li key={x.id}>
+              <span className={`block h-1 rounded-full ${i <= step ? "bg-corti-accent" : "bg-corti-border-faint"}`} />
+              <span className={`mt-2 block font-mono text-[11px] uppercase tracking-mono ${i === step ? "text-corti-text-primary" : "text-corti-text-tertiary"}`}>
+                {i + 1} · {x.short}
+              </span>
+            </li>
           ))}
-          <span className="cd-tag ml-2 shrink-0">
-            {step + 1} / {QUESTIONS.length}
-          </span>
-        </div>
+        </ol>
 
-        <h1 className="cd-h1 mb-2">{q.title}</h1>
-        <p className="cd-lede mb-8">{q.subtitle}</p>
+        <h1 className="cd-h1 mb-2">{title}</h1>
+        <p className="cd-lede mb-8">{subtitle}</p>
 
         <div className="grid gap-2.5 sm:grid-cols-2">
-          {q.options.map((o) => {
+          {options.map((o) => {
             const on = picked.includes(o.id);
             const full = !!q.max && picked.length >= q.max && !on;
             return (
@@ -126,151 +133,110 @@ export function Questionnaire({ onFreeText, onResult, onOpen }: Props) {
   );
 }
 
-function Result({
-  answers,
-  onEdit,
-  onRestart,
-  onResult,
-  onOpen,
-}: {
-  answers: Answers;
-  onEdit: () => void;
-  onRestart: () => void;
-  onResult: (ids: string[]) => void;
-  onOpen: (id: string) => void;
-}) {
+function Result({ answers, onEdit, onResult }: { answers: Answers; onEdit: () => void; onResult: (ids: string[]) => void }) {
   const matches = useMemo(() => scoreAnswers(answers, 8), [answers]);
   const ids = matches.map((m) => m.capability.id);
   const idsKey = ids.join(",");
-  const [hovered, setHovered] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
     if (idsKey) onResult(idsKey.split(",").slice(0, 3));
     window.scrollTo({ top: 0 });
   }, [idsKey, onResult]);
 
-  const products = matches.filter((m) => m.capability.track === "product");
-  const custom = matches.filter((m) => m.capability.track === "custom");
-
   if (!matches.length) {
     return (
       <section className="px-8 py-16 text-center">
-        <p className="cd-lede mb-4">Please answer a few more questions so we can recommend capabilities.</p>
-        <button type="button" className="cd-btn-primary" onClick={onRestart}>
-          Start again
+        <p className="cd-lede mb-4">Please answer a few more questions so we can match capabilities to your priorities.</p>
+        <button type="button" className="cd-btn-primary" onClick={onEdit}>
+          Change answers
         </button>
       </section>
     );
   }
 
-  const card = (m: Match) => {
-    const c = m.capability;
-    const p = c.productId ? PRODUCTS[c.productId] : undefined;
-    return (
-      <li
-        key={c.id}
-        onMouseEnter={() => setHovered(c.id)}
-        onMouseLeave={() => setHovered(null)}
-        className="cd-card group flex flex-col gap-3 p-5 transition-colors hover:border-corti-border-strong"
-      >
-        <div>
-          <div className="mb-1.5 flex items-center gap-2">
-            <span className="cd-tag">{JOBS[c.job].label}</span>
-          </div>
-          <h3 className="font-sans text-[18px] font-medium leading-tight">{c.name}</h3>
-          <p className="mt-1 text-[13.5px] leading-snug text-corti-text-secondary">{c.short}</p>
-          <p className="mt-2 text-[13px] leading-relaxed text-corti-text-tertiary">{c.outcome}</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-1">
-          <span className="mr-1 text-[11.5px] text-corti-text-tertiary">Built from</span>
-          {c.pipeline.map((s) => (
-            <span key={s.primitiveId} className="rounded-full border border-corti-border-faint px-2 py-px font-mono text-[10.5px] text-corti-text-tertiary">
-              {PRIMITIVES[s.primitiveId]?.name ?? s.primitiveId}
-            </span>
-          ))}
-        </div>
-        <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
-          {p ? (
-            <a href={p.href} target="_blank" rel="noreferrer" className="cd-btn-primary cd-btn-sm">
-              {p.cta} ↗
-            </a>
-          ) : (
-            <a
-              href={`${ADVANCE_PROGRAM.href}?capability=${encodeURIComponent(c.id)}`}
-              target="_blank"
-              rel="noreferrer"
-              className="cd-btn-ghost cd-btn-sm"
-            >
-              {ADVANCE_PROGRAM.cta} →
-            </a>
-          )}
-          <button
-            type="button"
-            onClick={() => onOpen(c.id)}
-            className="text-[12.5px] text-corti-text-tertiary underline decoration-dotted underline-offset-4 hover:text-corti-text-primary"
-          >
-            How it works
-          </button>
-        </div>
-      </li>
-    );
-  };
+  const productIds = [...new Set(matches.filter((m) => m.capability.track === "product").map((m) => m.capability.productId!))];
+  const custom = matches.filter((m) => m.capability.track === "custom");
 
   return (
     <>
-      <section className="cd-rule px-8 py-8">
-        <div className="cd-fade-up flex flex-wrap items-end justify-between gap-6">
-          <div className="min-w-0">
-            <p className="cd-eyebrow mb-3 flex items-center gap-2">
-              <span className="h-1.5 w-1.5 rounded-full bg-corti-accent" /> Matched to your priorities
-            </p>
-            <h1 className="cd-h1 mb-2">Where Corti can help</h1>
-            <p className="cd-lede mb-4 max-w-[60ch]">
-              {matches.length} capabilities that could support your work, and how each one is built. Explore any of them, or bring them to a
-              conversation with us.
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <button type="button" className="cd-btn-ghost cd-btn-sm" onClick={onEdit}>
-              Change answers
-            </button>
-            <button type="button" className="cd-btn-ghost cd-btn-sm" onClick={onRestart}>
-              Start over
-            </button>
-          </div>
+      <section className="cd-rule flex flex-wrap items-end justify-between gap-6 px-8 py-7">
+        <div className="cd-fade-up">
+          <p className="cd-eyebrow mb-3 flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-corti-accent" /> Matched to your priorities
+          </p>
+          <h1 className="cd-h1 mb-3 !text-[36px] xl:!text-[40px]">Your capability map</h1>
+          <p className="cd-lede max-w-[62ch]">
+            Capabilities matched to your role and priorities. Select any capability to see what it does, what it is built from,
+            and whether you can use it today or build it with us.
+          </p>
         </div>
+        <button type="button" className="cd-btn-ghost" onClick={onEdit}>
+          Change answers
+        </button>
       </section>
 
-      {products.length > 0 && (
-        <section className="px-8 pt-8">
-          <h2 className="cd-tag mb-3 !text-corti-accent">Available today · {products.length}</h2>
-          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{products.map(card)}</ul>
-        </section>
-      )}
-
-      {custom.length > 0 && (
-        <section className="px-8 pt-8">
-          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
-            <h2 className="cd-tag">Build with us · {custom.length}</h2>
-            <a
-              href={`${ADVANCE_PROGRAM.href}?capabilities=${encodeURIComponent(custom.map((m) => m.capability.id).join(","))}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-[12.5px] text-corti-text-secondary underline decoration-dotted underline-offset-4 hover:text-corti-accent"
-            >
-              Discuss all {custom.length} with us through the {ADVANCE_PROGRAM.name} →
-            </a>
+      <section className="px-8 pb-10 pt-6">
+        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="min-w-0">
+            <LibraryGraph
+              baseIds={ids}
+              keepOrder
+              highlightedCapId={selected}
+              extraCapIds={[selected]}
+              onSelectCapability={(id) => setSelected(selected === id ? null : id)}
+            />
           </div>
-          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{custom.map(card)}</ul>
-        </section>
-      )}
-
-      <section className="px-8 pb-10 pt-12">
-        <p className="cd-eyebrow mb-1">How these are built</p>
-        <p className="mb-5 text-[13.5px] text-corti-text-tertiary">
-          Every recommendation is composed from the same primitives. Hover a card above or a capability below to trace it.
-        </p>
-        <LibraryGraph baseIds={ids} keepOrder highlightedCapId={hovered} onSelectCapability={onOpen} />
+          <div className="xl:pt-[30px]">
+            {selected ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setSelected(null)}
+                  className="mb-3 font-mono text-[11px] text-corti-text-tertiary underline decoration-dotted underline-offset-4 hover:text-corti-text-primary"
+                >
+                  ← Your next steps
+                </button>
+                <DetailPanel capabilityId={selected} onSelect={setSelected} />
+              </>
+            ) : (
+              <div className="cd-card cd-fade-up flex flex-col overflow-hidden">
+                <div className="border-b border-corti-border-faint p-5">
+                  <p className="cd-eyebrow mb-2">Your next steps</p>
+                  <p className="text-[14px] leading-relaxed text-corti-text-secondary">
+                    Select a capability in the map to see what it does and what it is built from.
+                  </p>
+                </div>
+                {productIds.length > 0 && (
+                  <div className="border-b border-corti-border-faint p-5">
+                    <p className="cd-tag mb-3 !text-corti-accent">Available today</p>
+                    <div className="flex flex-wrap gap-2">
+                      {productIds.map((pid) => (
+                        <a key={pid} href={PRODUCTS[pid].href} target="_blank" rel="noreferrer" className="cd-btn-primary cd-btn-sm">
+                          {PRODUCTS[pid].cta} ↗
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {custom.length > 0 && (
+                  <div className="bg-[#121510] p-5">
+                    <p className="cd-tag mb-2">Build with us · {custom.length} in your map</p>
+                    <p className="mb-4 text-[13.5px] leading-relaxed text-corti-text-primary">{ADVANCE_PROGRAM.pitch}</p>
+                    <a
+                      href={`${ADVANCE_PROGRAM.href}?capabilities=${encodeURIComponent(custom.map((m) => m.capability.id).join(","))}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="cd-btn-ghost cd-btn-sm"
+                    >
+                      Explore these with us →
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </section>
     </>
   );

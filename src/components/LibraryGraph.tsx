@@ -251,7 +251,7 @@ export function LibraryGraph({
                 className={`cd-card relative z-10 flex flex-col gap-1 px-4 py-3 transition-[opacity,border-color,background-color] duration-200 ${
                   hi ? "!border-corti-accent/70 bg-[#121510]" : ""
                 }`}
-                style={{ opacity: dim ? 0.4 : 1 }}
+                style={{ opacity: uses === 0 ? 0.3 : dim ? 0.4 : 1 }}
               >
                 <div className="flex items-center justify-between">
                   <span className={`cd-tag ${hi ? "!text-corti-accent" : ""}`}>

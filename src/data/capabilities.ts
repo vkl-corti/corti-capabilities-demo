@@ -133,6 +133,9 @@ interface Editorial {
   productId?: string;
   /** Only when the Notion field is still a template placeholder. */
   problemOverride?: string;
+  /** Polished one-liner, used instead of Notion's when that reads as an
+   *  internal note (jargon like "HCP", fragments). Fix Notion too. */
+  pitch?: string;
 }
 
 const EDITORIAL: Record<string, Editorial> = {
@@ -141,6 +144,7 @@ const EDITORIAL: Record<string, Editorial> = {
     id: "ambient-scribe",
     productId: "scribe",
     short: "The note writes itself during the visit",
+    pitch: "Listens to the consultation and drafts the clinical note, ready for review when the visit ends.",
     job: "document",
     inputs: ["conversation"],
     keywords: ["ambient", "scribe", "note", "notes", "documentation", "consultation", "typing", "transcript", "soap", "hands-free", "visit"],
@@ -155,6 +159,7 @@ const EDITORIAL: Record<string, Editorial> = {
     id: "medical-dictation",
     productId: "dictation",
     short: "Speak into any field, in real time",
+    pitch: "Real-time medical speech recognition in any field of the clinician's system, including drug names and dosages.",
     job: "document",
     inputs: ["voice"],
     keywords: ["dictation", "dictate", "speech", "voice", "report", "reports", "radiology", "letter", "field", "typing"],
@@ -166,6 +171,7 @@ const EDITORIAL: Record<string, Editorial> = {
     id: "billing-assistant",
     productId: "coding",
     short: "Codes checked against the documentation",
+    pitch: "Suggests diagnosis and procedure codes from the documentation and checks them against it before a claim goes out.",
     job: "check",
     inputs: ["record"],
     keywords: ["billing", "bill", "code", "coding", "coded", "icd", "cpt", "drg", "claim", "claims", "cdi", "revenue", "audit"],
@@ -181,6 +187,7 @@ const EDITORIAL: Record<string, Editorial> = {
     id: "medical-knowledge-assistant",
     productId: "chat",
     short: "Sourced answers from guidelines & drug data",
+    pitch: "Answers clinical questions from guidelines, drug databases and local protocols, with the source passage shown.",
     job: "understand",
     inputs: ["rules"],
     keywords: ["knowledge", "question", "answer", "guideline", "drug", "reference", "protocol", "lookup", "evidence", "ask", "chat"],
@@ -299,6 +306,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Document generation assistant": {
     id: "document-generation",
     short: "Discharge letters & referrals from the record",
+    pitch: "Drafts discharge letters, referrals and summaries from the record, in the structure your organisation uses.",
     job: "write",
     inputs: ["record"],
     keywords: ["document", "documents", "discharge", "letter", "referral", "summary", "gp", "write up", "admission"],
@@ -352,6 +360,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Medication reconciliation": {
     id: "medication-reconciliation",
     short: "Conflicting med lists flagged, not guessed",
+    pitch: "Compares medication lists from the patient, referral, notes and record, and flags every conflict for the clinician to resolve.",
     job: "check",
     inputs: ["conversation", "record", "documents"],
     keywords: ["medication", "medicine", "reconciliation", "drug", "prescription", "discrepancy", "med list", "conflict", "dosage"],
@@ -461,6 +470,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Patient-at-a-glance/ Timeline": {
     id: "patient-at-a-glance",
     short: "The patient's story before you walk in",
+    pitch: "Summarises the patient's history, recent changes and open items from the record, ordered for the clinician's role.",
     job: "understand",
     inputs: ["record"],
     keywords: ["summary", "timeline", "at a glance", "overview", "prepare", "preparation", "history", "what changed", "pre-charting"],
@@ -474,6 +484,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Anatomy overview": {
     id: "anatomy-overview",
     short: "Altered anatomy, mapped before you operate",
+    pitch: "Builds one overview of a patient's current anatomy from operative notes, imaging and the record.",
     job: "understand",
     inputs: ["record"],
     keywords: ["anatomy", "surgery", "surgical", "operative notes", "drains", "lines", "anastomosis", "mesh", "pre-op", "imaging"],
@@ -540,6 +551,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Task extraction": {
     id: "task-extraction",
     short: "Follow-ups turned into prepared tasks",
+    pitch: "Turns follow-up actions from visits, emails and voicemails into prepared tasks, with approval before anything is sent.",
     job: "automate",
     inputs: ["conversation", "record", "messages"],
     keywords: ["follow-up", "follow up", "tasks", "task", "after visit", "referral form", "order test", "book follow-up", "actions", "to-do"],
@@ -610,6 +622,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Phone Assistant": {
     id: "phone-assistant",
     short: "Routine patient calls handled end to end",
+    pitch: "Handles routine patient calls, bookings, reminders and follow-ups, and hands red flags to staff with a summary.",
     job: "automate",
     inputs: ["messages", "patient", "schedule"],
     keywords: ["phone", "call", "calls", "booking", "book", "appointment", "reschedule", "reminder", "reminders", "reception", "hold"],
@@ -624,6 +637,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Health Monitoring": {
     id: "health-monitoring",
     short: "Deterioration spotted in the data, not the call",
+    pitch: "Watches results and readings across the patient population and alerts staff when a patient crosses a threshold.",
     job: "automate",
     inputs: ["record"],
     keywords: ["monitoring", "monitor", "alert", "alerts", "deterioration", "threshold", "chronic", "lab values", "readings", "population"],
@@ -637,6 +651,7 @@ const EDITORIAL: Record<string, Editorial> = {
   Routines: {
     id: "routines",
     short: "Scheduled sweeps that hand you a worklist",
+    pitch: "Runs scheduled checks across a patient list, such as pending results or overdue reviews, and hands staff a prioritised worklist.",
     job: "automate",
     inputs: ["record"],
     keywords: ["routine", "routines", "sweep", "worklist", "overdue", "recall", "pending results", "registry", "every morning"],
@@ -650,6 +665,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Scheduling assistant": {
     id: "scheduling-assistant",
     short: "Calendars tuned to demand and no-shows",
+    pitch: "Learns booking and no-show patterns to recommend slot layouts and suggest the best free slots.",
     job: "automate",
     inputs: ["schedule"],
     keywords: ["scheduling", "schedule", "calendar", "slots", "no-show", "no show", "capacity", "filling rate", "cancellation", "free slot"],
@@ -665,6 +681,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Patient intake": {
     id: "patient-intake",
     short: "Adaptive pre-visit interview, structured summary",
+    pitch: "Patients answer adaptive questions by text or voice before the visit, and the clinician receives a structured pre-visit summary.",
     job: "intake",
     inputs: ["patient"],
     keywords: ["intake", "pre-visit", "previsit", "history", "questionnaire", "before the visit", "anamnesis", "pre-charting"],
@@ -692,6 +709,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Chat with your own medical record": {
     id: "chat-with-record",
     short: "Patients ask their record in plain language",
+    pitch: "Lets patients ask questions about their own record in plain language, with the source shown.",
     job: "understand",
     inputs: ["record", "patient"],
     keywords: ["patient", "patients", "record", "results", "explain", "plain language", "adherence", "prevention", "portal"],
@@ -731,7 +749,7 @@ function build(): Capability[] {
       job: ed.job,
       inputs: ed.inputs,
       short: ed.short,
-      outcome: sentence(row.oneLiner),
+      outcome: ed.pitch ?? sentence(row.oneLiner),
       whenToUse: ed.problemOverride ?? row.clinicalProblem,
       howItWorks: row.howItWorks,
       keywords: ed.keywords,

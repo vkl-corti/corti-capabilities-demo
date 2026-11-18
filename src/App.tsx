@@ -45,11 +45,6 @@ export default function App() {
     else setDrawerId(id);
   };
 
-  const openRecommendation = (id: string) => {
-    record(id);
-    setDrawerId(id);
-  };
-
   const recordMany = useCallback((ids: string[]) => ids.forEach(record), [record]);
 
   const showInTree = (id: string) => {
@@ -113,7 +108,7 @@ export default function App() {
           )}
           {route === "all" && <AllPage onOpen={open} />}
 
-          {route === "try" && phase === "library" && <Questionnaire key={tryKey} onFreeText={start} onResult={recordMany} onOpen={openRecommendation} />}
+          {route === "try" && phase === "library" && <Questionnaire key={tryKey} onFreeText={start} onResult={recordMany} />}
           {route === "try" && phase === "input" && <GoalInput onCompose={handleCompose} onGuided={reset} />}
           {route === "try" && phase === "composing" && <ComposingState goal={activeGoal} />}
           {route === "try" && phase === "tree" && result && shownCapId && (
