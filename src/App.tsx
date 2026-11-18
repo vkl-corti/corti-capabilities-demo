@@ -109,7 +109,7 @@ export default function App() {
       <main className="flex-1">
         <div className="cd-shell min-h-full">
           {route === "tree" && (
-            <TreePage pinned={treePinned} onSelect={open} history={history} onTry={goTry} />
+            <TreePage pinned={treePinned} onSelect={open} history={history} onTry={goTry} onShowAll={() => navigate("all")} />
           )}
           {route === "all" && <AllPage onOpen={open} />}
 
@@ -148,7 +148,7 @@ export default function App() {
       <footer className="border-t border-corti-border-faint">
         <div className="cd-shell flex h-12 items-center justify-between px-8">
           <p className="text-[12px] text-corti-text-tertiary">
-            Demo · fictional scenarios, grounded taxonomy. Product and primitive links open on corti.ai.
+            Corti capability map. Product and primitive links open on corti.ai.
           </p>
           <p className="cd-tag">corti.ai</p>
         </div>

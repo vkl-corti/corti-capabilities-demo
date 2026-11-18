@@ -84,7 +84,7 @@ export const QUESTIONS: Question[] = [
       {
         id: "notes",
         label: "Clinical documentation during and after consultations",
-        boosts: { "ambient-scribe": 3, "medical-dictation": 1.5, "virtual-visit-notes": 1, "documentation-check": 1, "self-learning-vocabulary": 0.5, "voice-commands": 0.5 },
+        boosts: { "ambient-scribe": 3, "medical-dictation": 1.5, "virtual-visit-notes": 1, "documentation-check": 1, "dictation-ambient-note": 1, "notes-own-style": 1, "self-learning-vocabulary": 0.5, "voice-commands": 0.5 },
       },
       {
         id: "letters",
@@ -109,7 +109,7 @@ export const QUESTIONS: Question[] = [
       {
         id: "checking",
         label: "Coding, billing and compliance",
-        boosts: { "billing-assistant": 3, "regulatory-check": 2, "diagnosis-list-reconciliation": 2, "structured-chart-data": 1.5, "denial-management": 1 },
+        boosts: { "billing-assistant": 3, "regulatory-check": 2, "diagnosis-list-reconciliation": 2, "structured-chart-data": 1.5, "documentation-nudges": 1.5, "denial-management": 1 },
       },
       { id: "incoming", label: "Processing incoming documents and referrals", boosts: { "document-import": 3, "referral-intake": 3 } },
       { id: "lookup", label: "Looking up guidelines and drug information", boosts: { "medical-knowledge-assistant": 3, "chart-search": 1 } },
@@ -143,11 +143,11 @@ export const QUESTIONS: Question[] = [
     multi: false,
     weight: 0.5,
     options: [
-      { id: "patient", label: "More time for patient care", hint: "Less time at the screen", jobBoost: { capture: 1.5, understand: 1 } },
+      { id: "patient", label: "More time for patient care", hint: "Less time at the screen", jobBoost: { document: 1.5, understand: 1 } },
       { id: "home", label: "Less after-hours work", hint: "Documentation and admin done within the day", jobBoost: { write: 1.5, automate: 1 }, boosts: { "end-of-day": 1 } },
       { id: "safety", label: "Quality and patient safety", hint: "Gaps and errors caught early", jobBoost: { check: 2 } },
       { id: "team", label: "Lower administrative workload", hint: "Calls, inbox and paperwork", jobBoost: { automate: 2 } },
-      { id: "build", label: "Build or extend a product", hint: "Embed Corti capabilities in your solution", jobBoost: { capture: 0.5, understand: 0.5, check: 0.5 } },
+      { id: "build", label: "Build or extend a product", hint: "Embed Corti capabilities in your solution", jobBoost: { document: 0.5, intake: 0.5, understand: 0.5, check: 0.5 } },
     ],
   },
 ];

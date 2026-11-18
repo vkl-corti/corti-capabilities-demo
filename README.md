@@ -4,14 +4,13 @@ Three pages, one taxonomy (hash routes, so it works on GitHub Pages):
 
 | Page | Route | For |
 | --- | --- | --- |
-| **Capability tree** (home) | `#/` | Capabilities (left) → the primitives they boil down to (right). Click one to read it, see what it's built from and where it leads. Lenses: Highlights (greatest day-to-day impact), or one *job*: Capture & documentation, Drafting & correspondence, Quality & safety checks, Insight & search, Workflow automation. |
-| **All capabilities** | `#/all` | A calm, searchable list: products first, then everything else by job. |
+| **Capability tree** (home) | `#/` | Capabilities (left) → the building blocks they are composed from (right). Select one to read it, see what it is built from and where it leads. Lenses: **Highlights** (top of the priority list) or one group: Documentation, Intake & data, Drafting, Quality & safety, Insight & search, Automation. |
+| **All capabilities** | `#/all` | The full list: products first, then everything else by group, in priority order. Filter by user group or search. Linked from the home page. |
 | **Get recommendations** | `#/try` | Four short questions (role, where time is spent unnecessarily, situations that apply, main objective) for clinicians, care organisations, health-tech teams or anyone exploring a build, all statements to react to, no ideas needed. Ends in a list of up to 8 recommendations for inspiration, split into "Available today" and "Build with us", each showing what it does, what it is built from and its own CTA, plus the tree of how they are built. Questions and scoring in `src/data/questionnaire.ts`. Free text with the live Corti agent stays available as an alternative. |
 
 Every capability ends in one of two next steps:
-- **Product** (Scribe, Dictation, Coding, Chat): go straight to the product.
-- **Build with us**: explained and boiled down to primitives, with a CTA to the
-  **Advance program** (built with Corti, tailored to the customer).
+- **Product** (Scribe, Dictation, Coding, Chat): available today, go straight to the product.
+- **Build with us**: developed together through the **Advance program**; explained and boiled down to primitives, with a CTA to get in touch.
 
 ## Run it
 
@@ -117,7 +116,7 @@ Each capability carries facets that are data, not copy:
 | Facet | Values | Use |
 | --- | --- | --- |
 | `track` | product · custom | Which CTA: go to the product, or build it with us |
-| `job` | capture · write · check · understand · automate | Primary grouping in the catalogue |
+| `job` | document · intake · write · check · understand · automate | Primary grouping (the lenses and the All page) |
 | `JOBS[job].flow` | import · transform · act | The import/transform split, derived from the job |
 | `inputs` | conversation, voice, record, documents, messages, patient, rules, schedule | Filters and similarity |
 | `category` | Clinician-facing · Operations · Patient-facing (Notion) | Role filter |
@@ -135,3 +134,13 @@ weighted higher), same job, shared inputs and same user group. With no
 history it puts products first. The demo feeds it from localStorage
 (`useViewHistory`) and shows it as "Suggested for you" on the tree and "Related" in the detail drawer. In production, pass any history source (analytics, CRM,
 product usage); the function doesn't care.
+
+## Prioritisation
+
+`PRIORITY` in `src/data/capabilities.ts` is one ordered list of capability ids.
+It sets the order everywhere (tree, groups, All page) and its first
+`HIGHLIGHT_COUNT` entries are the Highlights. Rubric, in order of weight:
+available today as a product; extends the documentation core (Scribe,
+Dictation) or Coding; proven market demand; differentiation; breadth across
+clinicians, operations and patients. To re-prioritise, move an id up or down.
+The console warns if an id is missing from the list or unknown.

@@ -1,5 +1,5 @@
 {
-  "syncedAt": "2026-11-16",
+  "syncedAt": "2026-11-18",
   "source": "Corti AI capabilities (Notion)",
   "rows": [
     {
@@ -126,6 +126,19 @@
       "backlog": false
     },
     {
+      "name": "Dictation and ambient in one note",
+      "category": "Clinician-facing",
+      "oneLiner": "Lets the clinician switch between dictation and ambient capture in the same visit and combines both into one note, keeping dictated sentences word for word",
+      "clinicalProblem": "Clinicians dictate and talk with the patient in the same visit, but the tools treat them as separate. Dictated text and the ambient note then have to be merged by hand, and there is a risk that the clinician's own words get rewritten.",
+      "howItWorks": "Dictation and ambient capture attach to the same visit. For each section of the template the clinician chooses whether the content comes from dictation, the ambient conversation, extracted facts, or a mix. Dictated sentences are placed in the right section without rewording. Where dictation and ambient both cover a section, the dictation is kept and the ambient content only fills gaps, and a check makes sure the dictated sentences are unchanged in the final text. Sentences that don't fit any section are shown as unallocated. The clinician reviews before signing.",
+      "primitives": [
+        "Speech-to-text",
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
       "name": "Document generation assistant",
       "category": "Clinician-facing",
       "oneLiner": "Generates documents based on patient profile and encounters",
@@ -247,6 +260,18 @@
       "backlog": false
     },
     {
+      "name": "Notes in your own style",
+      "category": "Clinician-facing",
+      "oneLiner": "Generates notes in the clinician's own style, learned from their past notes and from the edits they make to generated notes",
+      "clinicalProblem": "Generated notes follow a template but not the individual clinician's way of writing, what they include in each section or their abbreviations. Clinicians rewrite the same parts after every visit, and one generic template is hard to get right for everyone.",
+      "howItWorks": "Learns in two ways. From past notes: the clinician provides earlier notes, and the capability describes their style and adjusts the instructions for each template section to match. From edits: after the clinician edits a generated note, it compares the draft with the final text and stores what it learned as instructions for that section, split into writing style, what to include and fixed rules like \"always include medication doses\". Typo fixes are ignored. The base template is never changed, so the clinician can see what was learned and compare the personalized note with the untailored one.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
       "name": "Patient AI conversation review",
       "category": "Clinician-facing",
       "oneLiner": "Takes what a patient got from a consumer AI chat, checks each claim against their record, and gives the clinician a short summary with talking points for the visit",
@@ -267,6 +292,19 @@
       "primitives": [
         "Text generation",
         "Agentic framework"
+      ],
+      "backlog": false
+    },
+    {
+      "name": "Real-time documentation nudges",
+      "category": "Clinician-facing",
+      "oneLiner": "Gives gentle prompts while the clinician writes or dictates when a note is missing specifics, like heart failure without type or diabetes without type",
+      "clinicalProblem": "Gaps like a diagnosis without type, stage or acuity are usually found after the note is written, in an audit or when a claim comes back. Then someone has to ask the clinician to go back and fix it.",
+      "howItWorks": "Watches the text as it is typed or dictated and checks it against the organization's rules after a short pause. Simple rules match on the text. Others use code prediction (SNOMED CT, ICD-10-CM) and an agent to see whether the note names a condition but leaves out the detail the rule asks for. When a gap is found, a small non-blocking prompt appears, and it goes away when the detail is added. Rules can be created from a plain-language description. The prompts only point at what is missing. They do not suggest a diagnosis and do not block signing.",
+      "primitives": [
+        "Text generation",
+        "Agentic framework",
+        "Medical coding"
       ],
       "backlog": false
     },
@@ -307,9 +345,9 @@
       "backlog": false
     },
     {
-      "name": "Self-learning vocabulary",
+      "name": "Self-learning dictation vocabulary",
       "category": "Clinician-facing",
-      "oneLiner": "Dictation that learns the clinician's own vocabulary, removes filler words and flags likely misrecognized terms and drug names",
+      "oneLiner": "Dictation that learns the clinician's own terms, names and drug names from their corrections, instead of a term list set up by hand",
       "clinicalProblem": "Dictation misses the clinic's own terms, names, abbreviations and drug names, so clinicians correct the same errors again and again. Spoken filler words and false starts also end up in the text and have to be removed by hand.",
       "howItWorks": "Adapts to the clinician's or clinic's own vocabulary over time, from the corrections the clinician makes and from approved documents. Removes filler words and false starts so the text reads like written text. When a term or drug name looks like a misrecognition from context, it flags the likely correction for the clinician to accept. It never changes numbers, units or dosages on its own.",
       "primitives": [
@@ -368,11 +406,11 @@
       "backlog": false
     },
     {
-      "name": "Voice commands and auto-texts",
+      "name": "Voice commands built from plain language",
       "category": "Clinician-facing",
-      "oneLiner": "Lets the clinician set their own voice commands and auto-texts, so a short phrase inserts a saved text block or formatting",
-      "clinicalProblem": "Clinicians say the same phrases and fix the same punctuation and layout over and over, for example standard advice or a normal findings text. Doing it by hand or by retyping costs time on every note.",
-      "howItWorks": "The clinician sets their own trigger phrases that insert a saved text block or script, and uses spoken commands for punctuation and formatting, for example \"comma\", \"question mark\" or \"new paragraph\". The saved text is written by the clinician and inserted exactly as saved. The capability does not add findings of its own. Could later include editing by voice, like \"delete the last sentence\".",
+      "oneLiner": "Lets the clinician or clinic create their own voice commands and auto-texts by describing them in plain language, with an agent building them for testing right away",
+      "clinicalProblem": "Every clinic has its own phrases, templates and normal findings texts, but setting up voice commands means writing structured configuration. Clinicians don't do it, so they keep retyping the same text and fixing the same layout by hand.",
+      "howItWorks": "The clinician describes what they want, for example \"when I say normal knee exam, insert this text\". An agent turns the description into a command with trigger phrases and an action (insert text, go to the next section, delete a sentence), saves it, and the clinician can test it by dictating straight away. Inserted text is exactly what the clinician saved. The capability does not add findings of its own.",
       "primitives": [
         "Speech-to-text"
       ],

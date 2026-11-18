@@ -208,7 +208,7 @@ export function LibraryGraph({
       {/* Column headers */}
       <div className="mb-3 grid grid-cols-[minmax(300px,2fr)_minmax(56px,0.7fr)_minmax(210px,240px)] items-end">
         <p className="cd-eyebrow col-start-3 row-start-1">
-          <span className="text-corti-text-tertiary">B /</span> Built from
+          <span className="text-corti-text-tertiary">B /</span> Building blocks
         </p>
         <span className="col-start-2 row-start-1" />
         <p className="cd-eyebrow col-start-1 row-start-1 flex items-center justify-between">
@@ -280,7 +280,7 @@ export function LibraryGraph({
         <div aria-hidden className="col-start-2 row-start-1" />
 
         {/* Capabilities (left column) — spread to the same height as the primitive column so both end level */}
-        <div className="col-start-1 row-start-1 flex flex-col justify-between gap-1.5">
+        <div className={`col-start-1 row-start-1 flex flex-col ${orderedCaps.length <= 5 ? "justify-center gap-3" : "justify-between gap-1.5"}`}>
           {orderedCaps.map((c) => {
             const hi = capIsHi(c.id);
             const dim = anyActive && !hi;
@@ -321,13 +321,9 @@ export function LibraryGraph({
                     />
                   ))}
                 </span>
-                {!isMatch && (c.track === "product" || !baseIds.includes(c.id)) && (
-                  <span
-                    className={`absolute -top-2 right-3 rounded-xs border bg-corti-bg-primary px-1.5 py-px font-mono text-[9.5px] uppercase tracking-mono ${
-                      c.track === "product" ? "border-corti-accent/50 text-corti-accent" : "border-corti-border-tree text-corti-text-secondary"
-                    }`}
-                  >
-                    {c.track === "product" ? "Product" : "Added"}
+                {!isMatch && c.track === "product" && (
+                  <span className="absolute -top-2 right-3 rounded-xs border border-corti-accent/50 bg-corti-bg-primary px-1.5 py-px font-mono text-[9.5px] uppercase tracking-mono text-corti-accent">
+                    Product
                   </span>
                 )}
                 {isMatch && (

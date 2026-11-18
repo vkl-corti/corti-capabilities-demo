@@ -71,13 +71,14 @@ const NOTION_PRIMITIVE: Record<string, string> = {
 
 /** Jobs in catalogue order. `flow` is the design team's import/transform split. */
 export const JOBS: Record<Job, { label: string; verb: string; flow: Flow }> = {
-  capture: { label: "Capture & documentation", verb: "Turns consultations, dictation and incoming documents into the record", flow: "import" },
-  write: { label: "Drafting & correspondence", verb: "Letters, forms and patient replies drafted from the record for review", flow: "transform" },
-  check: { label: "Quality & safety checks", verb: "Identifies gaps, conflicts and errors before they reach the record or the claim", flow: "transform" },
+  document: { label: "Documentation", verb: "Consultations and dictation turned into the clinical record", flow: "import" },
+  intake: { label: "Intake & data", verb: "Documents, referrals and patient input turned into structured data", flow: "import" },
+  write: { label: "Drafting", verb: "Letters, forms and patient replies drafted from the record for review", flow: "transform" },
+  check: { label: "Quality & safety", verb: "Gaps, conflicts and errors identified before they reach the record or the claim", flow: "transform" },
   understand: { label: "Insight & search", verb: "Summaries and answers from the record and guidelines, with sources", flow: "transform" },
-  automate: { label: "Workflow automation", verb: "Calls, inbox, worklists and follow-ups handled end to end", flow: "act" },
+  automate: { label: "Automation", verb: "Calls, inbox, worklists and follow-ups handled end to end", flow: "act" },
 };
-export const JOB_ORDER: Job[] = ["capture", "write", "check", "understand", "automate"];
+export const JOB_ORDER: Job[] = ["document", "intake", "write", "check", "understand", "automate"];
 
 export const INFO_SOURCES: Record<InfoSource, string> = {
   conversation: "Consultation",
@@ -140,7 +141,7 @@ const EDITORIAL: Record<string, Editorial> = {
     id: "ambient-scribe",
     productId: "scribe",
     short: "The note writes itself during the visit",
-    job: "capture",
+    job: "document",
     inputs: ["conversation"],
     keywords: ["ambient", "scribe", "note", "notes", "documentation", "consultation", "typing", "transcript", "soap", "hands-free", "visit"],
     steps: [
@@ -154,7 +155,7 @@ const EDITORIAL: Record<string, Editorial> = {
     id: "medical-dictation",
     productId: "dictation",
     short: "Speak into any field, in real time",
-    job: "capture",
+    job: "document",
     inputs: ["voice"],
     keywords: ["dictation", "dictate", "speech", "voice", "report", "reports", "radiology", "letter", "field", "typing"],
     steps: [["speech-to-text", "Transcribes in real time where the cursor is, with drug names, dosages and voice commands", "Reports, letters and forms written by voice, in any field"]],
@@ -195,7 +196,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Call and video visit notes": {
     id: "virtual-visit-notes",
     short: "Phone and video visits documented too",
-    job: "capture",
+    job: "document",
     inputs: ["conversation"],
     keywords: ["video", "phone", "telehealth", "virtual", "remote", "call", "teleconsultation", "follow-up message"],
     steps: [
@@ -208,7 +209,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Consultation interpreter": {
     id: "consultation-interpreter",
     short: "Live interpretation, note in the clinician's language",
-    job: "capture",
+    job: "document",
     inputs: ["conversation"],
     keywords: ["translate", "translation", "interpreter", "language", "languages", "foreign", "non-native", "multilingual"],
     steps: [
@@ -218,10 +219,10 @@ const EDITORIAL: Record<string, Editorial> = {
     connectors: ["ehr"],
     review: "Medication names and doses are shown in both languages to confirm. Supports a qualified interpreter; does not replace one where required.",
   },
-  "Self-learning vocabulary": {
+  "Self-learning dictation vocabulary": {
     id: "self-learning-vocabulary",
     short: "Dictation that learns your words",
-    job: "capture",
+    job: "document",
     inputs: ["voice"],
     keywords: ["vocabulary", "learn", "custom words", "misrecognition", "filler", "abbreviations", "drug names", "corrections"],
     steps: [
@@ -231,20 +232,47 @@ const EDITORIAL: Record<string, Editorial> = {
     connectors: ["host"],
     review: "Likely corrections are flagged for the clinician to accept. It never changes numbers, units or dosages on its own.",
   },
-  "Voice commands and auto-texts": {
+  "Voice commands built from plain language": {
     id: "voice-commands",
-    short: "Your own phrases insert your own text",
-    job: "capture",
+    short: "Describe a command, it gets built for you",
+    job: "document",
     inputs: ["voice"],
-    keywords: ["voice command", "auto-text", "macro", "template", "shortcut", "phrase", "snippet", "punctuation", "formatting"],
-    steps: [["speech-to-text", "Recognises the clinician's trigger phrases and formatting commands", "Standard text and layout in a few words, not retyped"]],
+    keywords: ["voice command", "auto-text", "macro", "template", "shortcut", "phrase", "snippet", "punctuation", "formatting", "plain language", "build command", "custom command"],
+    steps: [["speech-to-text", "Turns a plain-language description into a command with triggers and an action, ready to test by dictating", "Commands set up in minutes, not structured configuration"]],
     connectors: ["host"],
-    review: "Saved text is written by the clinician and inserted exactly as saved; it adds no findings of its own.",
+    review: "Inserted text is exactly what the clinician saved. The capability does not add findings of its own.",
+  },
+  "Dictation and ambient in one note": {
+    id: "dictation-ambient-note",
+    short: "Dictate and converse, one note from both",
+    job: "document",
+    inputs: ["voice", "conversation"],
+    keywords: ["dictation", "ambient", "combine", "merge", "one note", "dictate during visit", "unallocated", "section choice", "mixed capture"],
+    steps: [
+      ["speech-to-text", "Captures dictated sentences and the ambient conversation in the same visit", "Dictate the assessment, talk through the plan — both land in one note"],
+      ["text-generation", "Places dictated text in the right template section and lets ambient content fill the gaps", "Your own words kept word for word, the rest filled in"],
+      ["agentic-framework", "Checks dictated sentences are unchanged in the final text and shows sentences that fit no section", "Nothing you dictated gets rewritten; what fits nowhere is shown, not lost"],
+    ],
+    connectors: ["ehr"],
+    review: "The clinician reviews before signing. Dictated sentences are kept word for word.",
+  },
+  "Notes in your own style": {
+    id: "notes-own-style",
+    short: "Notes that learn the way you write",
+    job: "document",
+    inputs: ["conversation", "record"],
+    keywords: ["style", "own style", "personalize", "personalized", "writing style", "tone", "learn from edits", "adapt", "tailored", "rewrite less"],
+    steps: [
+      ["agentic-framework", "Learns from past notes and from edits to generated notes, storing style instructions per section", "The note starts out written the way you write"],
+      ["text-generation", "Generates each section with your learned instructions — writing style, what to include, fixed rules", "Stop rewriting the same parts after every visit"],
+    ],
+    connectors: ["ehr"],
+    review: "Typo fixes are ignored and the base template is never changed, so what was learned stays visible and comparable.",
   },
   "Document import": {
     id: "document-import",
     short: "Scans and pasted labs become usable data",
-    job: "capture",
+    job: "intake",
     inputs: ["documents"],
     keywords: ["scan", "pdf", "ocr", "fax", "import", "lab values", "paste", "letter", "digitize", "upload"],
     steps: [
@@ -257,7 +285,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Structured chart data": {
     id: "structured-chart-data",
     short: "What was said lands in the right fields",
-    job: "capture",
+    job: "intake",
     inputs: ["conversation", "record"],
     keywords: ["structured", "allergies", "problem list", "vitals", "fields", "snomed", "chart fields", "data entry"],
     steps: [
@@ -374,6 +402,20 @@ const EDITORIAL: Record<string, Editorial> = {
     ],
     connectors: ["ehr", "rules"],
     review: "It only checks against the rules it is given and does not judge the care. The clinician fixes what is missing.",
+  },
+  "Real-time documentation nudges": {
+    id: "documentation-nudges",
+    short: "Missing specifics caught while you write",
+    job: "check",
+    inputs: ["voice", "rules"],
+    keywords: ["nudge", "nudges", "prompt", "real-time", "while writing", "missing detail", "specificity", "completeness", "heart failure without type", "diabetes type", "documentation gaps"],
+    steps: [
+      ["text-generation", "Watches the text as it is typed or dictated and checks it after a short pause", "Gaps surface while you write, not in an audit later"],
+      ["medical-coding", "Predicts SNOMED CT and ICD-10-CM codes to see when a condition is named without its type, stage or acuity", "'Heart failure' without type flagged before the note is signed"],
+      ["agentic-framework", "Applies the organization's rules — text matches and agent checks — and builds new rules from plain-language descriptions", "Prompts reflect your requirements, not a generic checklist"],
+    ],
+    connectors: ["host", "rules"],
+    review: "Prompts only point at what is missing. They do not suggest a diagnosis and do not block signing.",
   },
   "Patient AI conversation review": {
     id: "patient-ai-review",
@@ -540,7 +582,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Referral intake check": {
     id: "referral-intake",
     short: "Incomplete referrals caught on arrival",
-    job: "capture",
+    job: "intake",
     inputs: ["documents"],
     keywords: ["referral", "referrals", "fax", "incoming", "missing information", "referrer", "intake", "triage referrals"],
     steps: [
@@ -623,7 +665,7 @@ const EDITORIAL: Record<string, Editorial> = {
   "Patient intake": {
     id: "patient-intake",
     short: "Adaptive pre-visit interview, structured summary",
-    job: "capture",
+    job: "intake",
     inputs: ["patient"],
     keywords: ["intake", "pre-visit", "previsit", "history", "questionnaire", "before the visit", "anamnesis", "pre-charting"],
     steps: [
@@ -703,28 +745,89 @@ function build(): Capability[] {
   return out;
 }
 
-export const CAPABILITIES: Capability[] = build();
+// ————————————————————————————————————————————————
+// PRIORITY: the one list that orders everything.
+//
+// Order of this list = order on the All capabilities page, inside every
+// group, in the tree, and the first HIGHLIGHT_COUNT entries ARE the
+// Highlights. To re-prioritise, move an id up or down.
+//
+// Rubric, in order of weight:
+//   1. Available today as a Corti product.
+//   2. Extends the documentation core (Scribe, Dictation) or Coding.
+//   3. Proven market demand.
+//   4. Differentiation: something a visitor has not seen elsewhere.
+//   5. Breadth: Highlights span clinicians, operations and patients.
+// ————————————————————————————————————————————————
+export const PRIORITY: string[] = [
+  // Highlights
+  "ambient-scribe",
+  "medical-dictation",
+  "billing-assistant",
+  "medical-knowledge-assistant",
+  "notes-own-style",
+  "documentation-nudges",
+  "consultation-interpreter",
+  "patient-ai-review",
+  "patient-at-a-glance",
+  "phone-assistant",
+  "patient-intake",
+  "anatomy-overview",
+  // Next: extends the core, or strong demand
+  "dictation-ambient-note",
+  "document-generation",
+  "shift-handover",
+  "inbox-assistant",
+  "denial-management",
+  "document-import",
+  "task-extraction",
+  "results-review",
+  "form-autofill",
+  "reply-drafting",
+  "end-of-day",
+  "medication-reconciliation",
+  "structured-chart-data",
+  // Then
+  "after-visit-summary",
+  "chart-search",
+  "mdt-prep",
+  "virtual-visit-notes",
+  "documentation-check",
+  "insurance-letters",
+  "referral-intake",
+  "health-monitoring",
+  "routines",
+  "diagnosis-list-reconciliation",
+  "chat-with-record",
+  "scheduling-assistant",
+  // Specialist or narrower audience
+  "regulatory-check",
+  "trainee-feedback",
+  "consultation-pointers",
+  "self-learning-vocabulary",
+  "voice-commands",
+];
+export const HIGHLIGHT_COUNT = 12;
+
+/** The "Highlights" lens: the top of PRIORITY. */
+export const FEATURED_IDS: string[] = PRIORITY.slice(0, HIGHLIGHT_COUNT);
+
+export const CAPABILITIES: Capability[] = (() => {
+  const built = build();
+  const rank = (id: string) => {
+    const i = PRIORITY.indexOf(id);
+    return i === -1 ? PRIORITY.length : i;
+  };
+  for (const c of built) if (!PRIORITY.includes(c.id)) console.warn(`[capabilities] "${c.id}" is not in PRIORITY — listed last.`);
+  for (const id of PRIORITY) if (!built.some((c) => c.id === id)) console.warn(`[capabilities] PRIORITY has unknown id "${id}".`);
+  return built.sort((a, b) => rank(a.id) - rank(b.id));
+})();
 
 /** Products in PRODUCT_ORDER (Scribe, Dictation, Coding, Chat). */
 export const PRODUCT_CAPABILITIES = PRODUCT_ORDER.map((pid) => CAPABILITIES.find((c) => c.productId === pid)).filter(
   (c): c is Capability => !!c,
 );
 export const CUSTOM_CAPABILITIES = CAPABILITIES.filter((c) => c.track === "custom");
-
-/** "Highlights" lens in the tree: the capabilities most likely to make a
- *  clinician stop and look. Chosen for wow-factor, not for coverage. */
-export const FEATURED_IDS: string[] = [
-  "ambient-scribe",
-  "consultation-interpreter",
-  "patient-ai-review",
-  "anatomy-overview",
-  "patient-at-a-glance",
-  "end-of-day",
-  "reply-drafting",
-  "shift-handover",
-  "medical-knowledge-assistant",
-  "phone-assistant",
-];
 
 /** Example goal chips on the "try it yourself" screen — a mix of product and build-with-us matches. */
 export const EXAMPLE_GOALS: { goal: string; capabilityId: string }[] = [

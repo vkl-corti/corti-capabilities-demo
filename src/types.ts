@@ -38,7 +38,7 @@ export type CapabilityCategory = "Clinician-facing" | "Operations" | "Patient-fa
 
 /**
  * Commercial path for a capability.
- * - product: a Corti product you can use today → CTA goes to the product.
+ * - product: a Corti product that is available today → CTA goes to the product.
  * - custom:  explained, broken down into primitives → CTA goes to the
  *            Advance program (build it with Corti, tailored to the customer).
  */
@@ -47,10 +47,10 @@ export type Track = "product" | "custom";
 /**
  * What the capability does with information — single value, used to group
  * the catalogue. Maps onto the design team's import / transform split via
- * JOBS[job].flow (capture = import; write/check/understand = transform;
- * automate = act, the case the binary split misses).
+ * JOBS[job].flow (document/intake = import; write/check/understand =
+ * transform; automate = act, the case the binary split misses).
  */
-export type Job = "capture" | "write" | "check" | "understand" | "automate";
+export type Job = "document" | "intake" | "write" | "check" | "understand" | "automate";
 export type Flow = "import" | "transform" | "act";
 
 /** Where the capability's information comes from — multi-value facet for

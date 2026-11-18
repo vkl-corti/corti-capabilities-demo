@@ -169,7 +169,7 @@ function CustomCta({ cap, onSelect }: { cap: Capability; onSelect?: (id: string)
               </button>
             </span>
           ))}
-          , which you can use today.
+          , which are available today.
         </p>
       )}
     </div>

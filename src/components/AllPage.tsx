@@ -35,7 +35,7 @@ export function AllPage({ onOpen }: Props) {
         <h1 className="cd-h1 mb-8">Everything Corti can do</h1>
 
         {/* Products */}
-        <h2 className="cd-tag mb-3 !text-corti-accent">Use today · {PRODUCT_CAPABILITIES.length} products</h2>
+        <h2 className="cd-tag mb-3 !text-corti-accent">Products · available today</h2>
         <div className="mb-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {PRODUCT_CAPABILITIES.map((c) => {
             const p = PRODUCTS[c.productId!];
