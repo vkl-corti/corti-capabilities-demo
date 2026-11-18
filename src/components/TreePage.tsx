@@ -35,8 +35,8 @@ export function TreePage({ pinned, onSelect, history, onTry, onShowAll }: Props)
           <p className="cd-eyebrow mb-3">Capabilities &amp; building blocks</p>
           <h1 className="cd-h1 mb-3 !text-[36px] xl:!text-[40px]">Explore the Corti capability map.</h1>
           <p className="cd-lede max-w-[62ch]">
-            From documentation to admin, every capability is composed from the same building blocks, available today or built
-            together with partners. Select one to see how it is made.
+            Each capability on the left is composed from the building blocks on the right. Select one to see what it does, how
+            it is made, and whether it is available today or built together with partners.
           </p>
         </div>
         <div className="flex gap-2">
