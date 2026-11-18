@@ -91,9 +91,10 @@ review rule, product link). On load it warns in the console when:
 - a Notion row has no editorial entry (it is skipped), or
 - Notion's "Primitives used" ≠ the pipeline's primitives.
 
-Excluded: rows ticked **Backlog** (Care Plan Assistant, Diagnosis assistant,
-Patient triage), and **AI review trail**, which is a trust-layer item on
-every capability instead of a card (as its Notion note suggests).
+Not in the snapshot: rows ticked **Backlog**, and **AI review trail**, which is
+a trust-layer item on every capability instead of a card (as its Notion note
+suggests). The site and repo are public, so when re-syncing, leave these rows
+out; anything in the snapshot ships in the JavaScript bundle.
 
 Re-sync = re-export the snapshot, then fill any warnings. The questionnaire is checked against the same list on load: unknown ids in its answers, and capabilities no answer can reach, are warned about in the console.
 

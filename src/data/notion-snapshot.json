@@ -3,17 +3,6 @@
   "source": "Corti AI capabilities (Notion)",
   "rows": [
     {
-      "name": "AI review trail",
-      "category": null,
-      "oneLiner": "Logs what the AI produced, what the clinician changed and who signed, so every AI-assisted entry can be traced",
-      "clinicalProblem": "AI use is moving faster than policy. Doximity found 81% of physicians say AI use is permitted at their organization but only 28% have clear policies and approvals. Hospitals need to show who reviewed what, and clinicians want to show they did.",
-      "howItWorks": "For each AI-generated item (note, letter, code, task) it records the AI draft, the final version, the edits, the sources used, and who approved it and when. Compliance or the clinician can filter by person, type or period. It is read-only and does not change any entry.",
-      "primitives": [
-        "Agentic framework"
-      ],
-      "backlog": false
-    },
-    {
       "name": "Ambient scribe",
       "category": "Clinician-facing",
       "oneLiner": "Ambient AI transcription + clinical note generation during HCP consultations",
@@ -52,18 +41,6 @@
       "backlog": false
     },
     {
-      "name": "Care Plan Assistant",
-      "category": "Clinician-facing",
-      "oneLiner": "Suggests prescription & treatment plan based on diagnosis, aligned with clinical guidelines",
-      "clinicalProblem": "Choosing a treatment means checking the current guideline, interactions with existing medication, allergies and local practice, with no time to consult any of it mid-visit. Choices rely on memory, so they drift from guidelines and miss what has changed.",
-      "howItWorks": "Takes the diagnosis together with the patient's record (medications, allergies, conditions, results) and retrieves the relevant guideline and local protocols. Drafts a proposed plan (prescriptions with dosing, tests, follow-up) with the guideline passage cited for each suggestion. The clinician accepts, changes or rejects each item; nothing is prescribed without their sign-off.",
-      "primitives": [
-        "Text generation",
-        "Agentic framework"
-      ],
-      "backlog": true
-    },
-    {
       "name": "Chart search",
       "category": "Clinician-facing",
       "oneLiner": "Semantic search on top of the record, returning documents or answering a question directly with the source shown",
@@ -99,18 +76,6 @@
         "Agentic framework"
       ],
       "backlog": false
-    },
-    {
-      "name": "Diagnosis assistant",
-      "category": "Clinician-facing",
-      "oneLiner": "Suggest differential diagnosis and care path to diagnosis",
-      "clinicalProblem": "Reaching a diagnosis takes several visits: order tests, see the patient again, narrow it down. With limited time per patient and thousands of rare conditions, uncommon diagnoses are considered late and unnecessary tests get ordered along the way.",
-      "howItWorks": "Takes the patient's history, symptoms, findings and results and produces a ranked differential diagnosis, with the reasoning and supporting evidence for each candidate. It also proposes the path to a diagnosis: which tests or referrals would confirm or rule out what. The clinician keeps the decision; the suggestions are advisory only.",
-      "primitives": [
-        "Corti Models",
-        "Text generation"
-      ],
-      "backlog": true
     },
     {
       "name": "Diagnosis list reconciliation",
@@ -553,19 +518,6 @@
         "Agentic framework"
       ],
       "backlog": false
-    },
-    {
-      "name": "Patient triage",
-      "category": "Patient-facing",
-      "oneLiner": "Assesses a patient's symptoms when they get in touch (phone, chat or app) and directs them to the right level of care, with clear escalation to a clinician on red flags.",
-      "clinicalProblem": "Patients contacting a clinic or helpline need to be directed to the right level of care quickly, and staff time for safe triage is limited. Getting it wrong in either direction is a patient safety and capacity problem.",
-      "howItWorks": "Takes what the patient reports on the call or in chat, transcribed if voice. Asks follow-up questions until enough is known, then maps the picture to a level of care with the reasoning shown. Red-flag answers escalate to a clinician immediately instead of going through the rest of the flow. The outcome is a recommendation for staff; the capability does not diagnose and does not turn anyone away.",
-      "primitives": [
-        "Speech-to-text",
-        "Text generation",
-        "Agentic framework"
-      ],
-      "backlog": true
     }
   ]
 }

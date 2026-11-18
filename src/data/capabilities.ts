@@ -18,7 +18,8 @@ import { PRODUCT_ORDER } from "./products";
 // "Primitives used" and the pipeline is reported the same way, so drift
 // shows up in the dev console instead of silently in the UI.
 //
-// Not shown: rows ticked "Backlog" in Notion, and "AI review trail", which
+// Not in the snapshot (the site is public, so unreleased items must not ship
+// in the bundle): rows ticked "Backlog" in Notion, and "AI review trail", which
 // Notion itself suggests is a platform trust message rather than a
 // capability. It is a trust-layer item on every capability (REVIEW_TRAIL).
 // ————————————————————————————————————————————————
