@@ -216,16 +216,13 @@ export function LibraryGraph({
             <span className="text-corti-text-tertiary">A /</span> Capabilities
           </span>
           <span className="flex items-center gap-3">
-            <span className="cd-tag normal-case">
-              {orderedCaps.length} of {CAPABILITIES.length}
-            </span>
             {onShowAll && (
               <button
                 type="button"
                 onClick={onShowAll}
                 className="font-mono text-[11px] normal-case tracking-normal text-corti-text-primary underline decoration-dotted underline-offset-4 hover:text-corti-accent"
               >
-                See all {CAPABILITIES.length} →
+                See all →
               </button>
             )}
           </span>
