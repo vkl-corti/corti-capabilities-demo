@@ -1,29 +1,35 @@
 import { useMemo, useState } from "react";
-import { CAPABILITIES, CATEGORIES, JOBS, JOB_ORDER, PRIMITIVES } from "../data/capabilities";
-import type { Capability, CapabilityCategory } from "../types";
+import { CAPABILITIES, JOBS, JOB_ORDER, PRIMITIVES } from "../data/capabilities";
+import type { Capability, Track } from "../types";
 
 // The complete list: every capability, grouped, in priority order. Products
 // are marked inline (they lead their group). Click opens the detail drawer.
+
+const TRACK_FILTERS: { value: Track | null; label: string }[] = [
+  { value: null, label: "All" },
+  { value: "product", label: "Available today" },
+  { value: "custom", label: "Build with us" },
+];
 
 interface Props {
   onOpen: (id: string) => void;
 }
 
 export function AllPage({ onOpen }: Props) {
-  const [role, setRole] = useState<CapabilityCategory | null>(null);
+  const [track, setTrack] = useState<Track | null>(null);
   const [q, setQ] = useState("");
 
   const groups = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const match = (c: Capability) =>
-      (!role || c.category === role) &&
+      (!track || c.track === track) &&
       (!needle ||
         [c.name, c.short, c.outcome, c.whenToUse, ...c.keywords, ...c.pipeline.map((p) => PRIMITIVES[p.primitiveId]?.name ?? "")]
           .join(" ")
           .toLowerCase()
           .includes(needle));
     return JOB_ORDER.map((job) => ({ job, caps: CAPABILITIES.filter((c) => c.job === job && match(c)) })).filter((g) => g.caps.length);
-  }, [q, role]);
+  }, [q, track]);
 
   const shown = groups.reduce((n, g) => n + g.caps.length, 0);
   const filtered = shown !== CAPABILITIES.length;
@@ -34,37 +40,25 @@ export function AllPage({ onOpen }: Props) {
         <p className="cd-eyebrow mb-3">Full list</p>
         <h1 className="cd-h1 mb-2">Browse every capability</h1>
         <p className="mb-8 text-[14px] text-corti-text-tertiary">
-          {filtered ? `Showing ${shown} matching capabilities` : "Filter by who it is for, or search for what you need."}
+          {filtered ? `Showing ${shown} matching capabilities` : "Filter by availability, or search for what you need."}
         </p>
 
-        <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-corti-border-faint pb-4">
-          <p className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] text-corti-text-tertiary">
-            <span className="flex items-center gap-1.5">
-              <span className="rounded-xs border border-corti-accent/50 px-1 font-mono text-[9px] uppercase text-corti-accent">Product</span>
-              Available today
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="rounded-xs border border-corti-border-tree px-1 font-mono text-[9px] uppercase text-corti-text-secondary">
-                Build with us
-              </span>
-              Developed together with you
-            </span>
-          </p>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-corti-border-faint pb-4">
           <div className="flex flex-wrap items-center gap-2">
-            {[null, ...CATEGORIES].map((r) => (
+            {TRACK_FILTERS.map(({ value, label }) => (
               <button
-                key={r ?? "all"}
+                key={label}
                 type="button"
-                onClick={() => setRole(r)}
+                onClick={() => setTrack(value)}
                 className={`rounded-full border px-3 py-1 text-[12.5px] transition-colors ${
-                  role === r ? "border-corti-accent text-corti-accent" : "border-corti-border-faint text-corti-text-secondary hover:border-corti-border-strong"
+                  track === value ? "border-corti-accent text-corti-accent" : "border-corti-border-faint text-corti-text-secondary hover:border-corti-border-strong"
                 }`}
               >
-                {r ?? "Everyone"}
+                {label}
               </button>
             ))}
-            <input className="cd-input !h-8 w-[180px] !text-[13px]" placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
+          <input className="cd-input !h-8 w-[200px] !text-[13px]" placeholder="Search…" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
 
         {groups.length === 0 && <p className="text-[14px] text-corti-text-tertiary">Nothing matches. Try another word.</p>}
