@@ -46,6 +46,8 @@ export interface Option {
   jobBoost?: Partial<Record<Job, number>>;
   /** Objective only: groups that lead the results. */
   focus?: Job[];
+  /** Heading the option is listed under (questions with `groups`). */
+  group?: string;
 }
 
 export interface Question {
@@ -62,6 +64,8 @@ export interface Question {
   /** Multiplier for this question's points. Specific situations say the most
    *  about what someone needs; the broad objective is mostly a tiebreaker. */
   weight: number;
+  /** Optional headings, in display order; options carry `group`. */
+  groups?: string[];
   options: Option[];
 }
 
@@ -193,30 +197,69 @@ export const QUESTIONS: Question[] = [
     },
     multi: true,
     weight: 1.6,
+    groups: ["Consultations", "Documentation", "Patient information", "Coordination", "Operations"],
     options: [
-      { id: "virtual", label: "Consultations by phone or video", roles: ["gp", "specialist", "nurse", "builder"], boosts: { "virtual-visit-notes": 3 } },
-      { id: "language", label: "Patients who speak a different language", roles: [...CLINICAL, "leader", "builder"], boosts: { "consultation-interpreter": 3.5 } },
-      { id: "ai", label: "Patients presenting AI-generated self-diagnoses", roles: ["gp", "hospital", "specialist", "builder"], boosts: { "patient-ai-review": 3.5 } },
-      { id: "handover", label: "Shift handovers", roles: ["hospital", "surgeon", "nurse", "leader"], boosts: { "shift-handover": 3 } },
-      { id: "trainees", label: "Supervising trainees or residents", roles: ["hospital", "surgeon", "specialist"], boosts: { "trainee-feedback": 3 } },
-      { id: "surgery", label: "Patients with complex surgical histories", roles: ["surgeon", "hospital"], boosts: { "anatomy-overview": 3 } },
-      { id: "mdt", label: "MDT or tumour board preparation", roles: ["surgeon", "specialist", "hospital"], boosts: { "mdt-prep": 3 } },
-      { id: "meds", label: "Medication lists that differ between sources", roles: ["gp", "hospital", "specialist", "nurse"], boosts: { "medication-reconciliation": 3, "diagnosis-list-reconciliation": 1 } },
+      // Consultations
+      { id: "virtual", group: "Consultations", label: "Consultations by phone or video", roles: ["gp", "specialist", "nurse", "builder"], boosts: { "virtual-visit-notes": 3 } },
+      { id: "language", group: "Consultations", label: "Patients who speak a different language", roles: [...CLINICAL, "leader", "builder"], boosts: { "consultation-interpreter": 3.5 } },
+      { id: "ai", group: "Consultations", label: "Patients presenting AI-generated self-diagnoses", roles: ["gp", "hospital", "specialist", "builder"], boosts: { "patient-ai-review": 3.5 } },
+      {
+        id: "dictate-converse",
+        group: "Consultations",
+        label: "Dictating and talking with the patient in the same visit",
+        roles: ["gp", "specialist", "surgeon", "builder"],
+        boosts: { "dictation-ambient-note": 3, "medical-dictation": 1, "ambient-scribe": 0.5 },
+      },
+      { id: "pointers", group: "Consultations", label: "Cases outside your usual area of expertise", roles: ["gp"], boosts: { "consultation-pointers": 3 } },
+      { id: "guideline-lookup", group: "Consultations", label: "Checking guidelines or doses during consultations", roles: ["nurse", "builder"], boosts: { "medical-knowledge-assistant": 3 } },
+      // Documentation
       {
         id: "returned",
+        group: "Documentation",
         label: "Notes or claims returned for missing details",
         roles: ["hospital", "surgeon", "specialist", "practice", "leader"],
         boosts: { "documentation-nudges": 3, "regulatory-check": 2, "documentation-check": 1 },
       },
-      { id: "late", label: "Administrative work after hours", roles: [...CLINICAL, "leader"], boosts: { "end-of-day": 3, "ambient-scribe": 1, "notes-own-style": 1, "task-extraction": 1 } },
-      { id: "forget", label: "Patients not retaining visit instructions", roles: ["gp", "specialist", "nurse", "builder"], boosts: { "after-visit-summary": 3, "chat-with-record": 1.5 } },
-      { id: "labs", label: "Large volumes of results to review", roles: ["gp", "hospital", "specialist", "nurse"], boosts: { "results-review": 3 } },
-      { id: "phones", label: "High inbound call volumes", roles: ["gp", "practice", "leader", "builder"], boosts: { "phone-assistant": 3 } },
-      { id: "inbox", label: "A growing email and voicemail backlog", roles: ["practice", "leader"], boosts: { "inbox-assistant": 3 } },
-      { id: "noshows", label: "Scheduling gaps and no-shows", roles: ["practice", "leader"], boosts: { "scheduling-assistant": 3 } },
-      { id: "recalls", label: "Patients overdue for reviews or recalls", roles: ["practice", "nurse", "leader"], boosts: { routines: 2.5, "health-monitoring": 2 } },
-      { id: "referrals", label: "Referrals arriving incomplete", roles: ["practice", "specialist", "surgeon"], boosts: { "referral-intake": 3 } },
-      { id: "denials", label: "Denied or disputed claims", roles: ["practice", "leader"], boosts: { "denial-management": 3 } },
+      { id: "rewrite-notes", group: "Documentation", label: "Rewriting generated notes to match your own style", roles: ["gp", "specialist", "hospital", "surgeon", "builder"], boosts: { "notes-own-style": 3 } },
+      {
+        id: "dictation-errors",
+        group: "Documentation",
+        label: "Correcting the same dictation errors repeatedly",
+        roles: ["surgeon", "hospital", "builder"],
+        boosts: { "self-learning-vocabulary": 3, "voice-commands": 1, "medical-dictation": 0.5 },
+      },
+      { id: "standard-texts", group: "Documentation", label: "Retyping the same standard phrases and texts", roles: ["surgeon", "builder"], boosts: { "voice-commands": 3, "self-learning-vocabulary": 0.5 } },
+      { id: "forms", group: "Documentation", label: "Recurring forms and insurance letters completed by hand", roles: ["gp", "specialist", "practice"], boosts: { "form-autofill": 3, "insurance-letters": 1.5 } },
+      { id: "empty-fields", group: "Documentation", label: "Structured fields left incomplete in the record", roles: ["leader", "builder"], boosts: { "structured-chart-data": 3 } },
+      { id: "late", group: "Documentation", label: "Administrative work after hours", roles: [...CLINICAL, "leader"], boosts: { "end-of-day": 3, "ambient-scribe": 1, "notes-own-style": 1, "task-extraction": 1 } },
+      // Patient information
+      { id: "meds", group: "Patient information", label: "Medication lists that differ between sources", roles: ["gp", "hospital", "specialist", "nurse"], boosts: { "medication-reconciliation": 3, "diagnosis-list-reconciliation": 1 } },
+      { id: "problem-list", group: "Patient information", label: "Problem lists that no longer match the notes", roles: ["gp", "hospital"], boosts: { "diagnosis-list-reconciliation": 3, "structured-chart-data": 1 } },
+      { id: "find-detail", group: "Patient information", label: "Searching long records for a specific detail", roles: ["hospital", "specialist", "nurse", "builder"], boosts: { "chart-search": 3, "patient-at-a-glance": 1 } },
+      { id: "surgery", group: "Patient information", label: "Patients with complex surgical histories", roles: ["surgeon", "hospital"], boosts: { "anatomy-overview": 3 } },
+      { id: "labs", group: "Patient information", label: "Large volumes of results to review", roles: ["gp", "hospital", "specialist", "nurse"], boosts: { "results-review": 3 } },
+      { id: "no-history", group: "Patient information", label: "Patients arriving without a collected history", roles: ["gp", "specialist", "nurse", "practice"], boosts: { "patient-intake": 3, "patient-at-a-glance": 0.5 } },
+      { id: "scans", group: "Patient information", label: "Scanned or faxed documents that need retyping", roles: ["practice", "leader"], boosts: { "document-import": 3 } },
+      // Coordination
+      { id: "handover", group: "Coordination", label: "Shift handovers", roles: ["hospital", "surgeon", "nurse", "leader"], boosts: { "shift-handover": 3 } },
+      { id: "mdt", group: "Coordination", label: "MDT or tumour board preparation", roles: ["surgeon", "specialist", "hospital"], boosts: { "mdt-prep": 3 } },
+      { id: "trainees", group: "Coordination", label: "Supervising trainees or residents", roles: ["hospital", "surgeon"], boosts: { "trainee-feedback": 3 } },
+      { id: "forget", group: "Coordination", label: "Patients not retaining visit instructions", roles: ["gp", "nurse", "builder"], boosts: { "after-visit-summary": 3, "chat-with-record": 1.5 } },
+      {
+        id: "patient-questions",
+        group: "Coordination",
+        label: "Patients calling with questions about results or treatment",
+        roles: ["gp", "nurse", "practice", "builder"],
+        boosts: { "chat-with-record": 2.5, "reply-drafting": 1.5 },
+      },
+      { id: "referrals", group: "Coordination", label: "Referrals arriving incomplete", roles: ["practice", "specialist", "surgeon"], boosts: { "referral-intake": 3 } },
+      // Operations
+      { id: "phones", group: "Operations", label: "High inbound call volumes", roles: ["practice", "leader", "builder"], boosts: { "phone-assistant": 3 } },
+      { id: "inbox", group: "Operations", label: "A growing email and voicemail backlog", roles: ["practice", "leader"], boosts: { "inbox-assistant": 3 } },
+      { id: "noshows", group: "Operations", label: "Scheduling gaps and no-shows", roles: ["practice", "leader"], boosts: { "scheduling-assistant": 3 } },
+      { id: "recalls", group: "Operations", label: "Patients overdue for reviews or recalls", roles: ["practice", "nurse", "leader"], boosts: { routines: 2.5, "health-monitoring": 2 } },
+      { id: "coding-backlog", group: "Operations", label: "Coding reviewed after the fact, or only on a sample", roles: ["practice", "leader"], boosts: { "billing-assistant": 3, "documentation-nudges": 1 } },
+      { id: "denials", group: "Operations", label: "Denied or disputed claims", roles: ["practice", "leader"], boosts: { "denial-management": 3 } },
     ],
   },
   {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { QUESTIONS, questionCopy, roleOf, scoreAnswers, visibleOptions, type Answers } from "../data/questionnaire";
+import { QUESTIONS, questionCopy, roleOf, scoreAnswers, visibleOptions, type Answers, type Option } from "../data/questionnaire";
 import { ADVANCE_PROGRAM, PRODUCTS } from "../data/products";
 import { DetailPanel } from "./DetailPanel";
 import { LibraryGraph } from "./LibraryGraph";
@@ -51,9 +51,52 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
     });
   };
 
+  // Questions with headings (situations) list their options per group, three columns wide.
+  const sections = q.groups
+    ? q.groups.map((group) => ({ group, opts: options.filter((o) => o.group === group) })).filter((s) => s.opts.length > 0)
+    : [{ group: "", opts: options }];
+
+  const renderOption = (o: Option) => {
+    const on = picked.includes(o.id);
+    const full = !!q.max && picked.length >= q.max && !on;
+    return (
+      <button
+        key={o.id}
+        type="button"
+        onClick={() => toggle(o.id)}
+        disabled={full}
+        className={`group flex items-start gap-3 rounded-lg border px-4 text-left transition-colors ${q.groups ? "py-3" : "py-3.5"} ${
+          on
+            ? "border-corti-accent bg-[#121510]"
+            : full
+              ? "border-corti-border-faint opacity-40"
+              : "border-corti-border-faint bg-corti-bg-card hover:border-corti-border-strong"
+        }`}
+      >
+        <span
+          className={`mt-[3px] flex h-4 w-4 shrink-0 items-center justify-center border text-[10px] ${q.multi ? "rounded-[4px]" : "rounded-full"} ${
+            on ? "border-corti-accent bg-corti-accent text-black" : "border-corti-border-tree"
+          }`}
+        >
+          {on && "✓"}
+        </span>
+        <span>
+          <span
+            className={`block leading-snug ${q.groups ? "text-[14.5px]" : "text-[15.5px]"} ${
+              on ? "text-corti-text-primary" : "text-corti-text-secondary group-hover:text-corti-text-primary"
+            }`}
+          >
+            {o.label}
+          </span>
+          {o.hint && <span className="block text-[12.5px] text-corti-text-tertiary">{o.hint}</span>}
+        </span>
+      </button>
+    );
+  };
+
   return (
     <section className="cd-dotted flex min-h-[calc(100vh-112px)] items-start px-8 py-12">
-      <div key={q.id} className="cd-fade-up mx-auto w-full max-w-[780px]">
+      <div key={q.id} className={`cd-fade-up mx-auto w-full ${q.groups ? "max-w-[1060px]" : "max-w-[780px]"}`}>
         {/* Progress, labelled */}
         <ol className="mb-8 grid grid-cols-4 gap-3">
           {QUESTIONS.map((x, i) => (
@@ -69,41 +112,12 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
         <h1 className="cd-h1 mb-2">{title}</h1>
         <p className="cd-lede mb-8">{subtitle}</p>
 
-        <div className="grid gap-2.5 sm:grid-cols-2">
-          {options.map((o) => {
-            const on = picked.includes(o.id);
-            const full = !!q.max && picked.length >= q.max && !on;
-            return (
-              <button
-                key={o.id}
-                type="button"
-                onClick={() => toggle(o.id)}
-                disabled={full}
-                className={`group flex items-start gap-3 rounded-lg border px-4 py-3.5 text-left transition-colors ${
-                  on
-                    ? "border-corti-accent bg-[#121510]"
-                    : full
-                      ? "border-corti-border-faint opacity-40"
-                      : "border-corti-border-faint bg-corti-bg-card hover:border-corti-border-strong"
-                }`}
-              >
-                <span
-                  className={`mt-[3px] flex h-4 w-4 shrink-0 items-center justify-center border text-[10px] ${q.multi ? "rounded-[4px]" : "rounded-full"} ${
-                    on ? "border-corti-accent bg-corti-accent text-black" : "border-corti-border-tree"
-                  }`}
-                >
-                  {on && "✓"}
-                </span>
-                <span>
-                  <span className={`block text-[15.5px] leading-snug ${on ? "text-corti-text-primary" : "text-corti-text-secondary group-hover:text-corti-text-primary"}`}>
-                    {o.label}
-                  </span>
-                  {o.hint && <span className="block text-[12.5px] text-corti-text-tertiary">{o.hint}</span>}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+        {sections.map(({ group, opts }) => (
+          <div key={group || "all"} className={group ? "mb-5 last:mb-0" : ""}>
+            {group && <p className="cd-tag mb-2">{group}</p>}
+            <div className={`grid gap-2.5 sm:grid-cols-2 ${group ? "lg:grid-cols-3" : ""}`}>{opts.map(renderOption)}</div>
+          </div>
+        ))}
 
         <div className="mt-8 flex items-center justify-between">
           <button
