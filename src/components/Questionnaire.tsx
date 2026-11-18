@@ -51,7 +51,7 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
     });
   };
 
-  // Questions with headings (situations) list their options per group, three columns wide.
+  // Questions with headings (situations) list their options per group.
   const sections = q.groups
     ? q.groups.map((group) => ({ group, opts: options.filter((o) => o.group === group) })).filter((s) => s.opts.length > 0)
     : [{ group: "", opts: options }];
@@ -65,7 +65,7 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
         type="button"
         onClick={() => toggle(o.id)}
         disabled={full}
-        className={`group flex items-start gap-3 rounded-lg border px-4 text-left transition-colors ${q.groups ? "py-3" : "py-3.5"} ${
+        className={`group flex items-start gap-3 rounded-lg border px-4 py-3.5 text-left transition-colors ${
           on
             ? "border-corti-accent bg-[#121510]"
             : full
@@ -82,7 +82,7 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
         </span>
         <span>
           <span
-            className={`block leading-snug ${q.groups ? "text-[14.5px]" : "text-[15.5px]"} ${
+            className={`block text-[15.5px] leading-snug ${
               on ? "text-corti-text-primary" : "text-corti-text-secondary group-hover:text-corti-text-primary"
             }`}
           >
@@ -96,7 +96,7 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
 
   return (
     <section className="cd-dotted flex min-h-[calc(100vh-112px)] items-start px-8 py-12">
-      <div key={q.id} className={`cd-fade-up mx-auto w-full ${q.groups ? "max-w-[1060px]" : "max-w-[780px]"}`}>
+      <div key={q.id} className="cd-fade-up mx-auto w-full max-w-[780px]">
         {/* Progress, labelled */}
         <ol className="mb-8 grid grid-cols-4 gap-3">
           {QUESTIONS.map((x, i) => (
@@ -115,7 +115,7 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
         {sections.map(({ group, opts }) => (
           <div key={group || "all"} className={group ? "mb-5 last:mb-0" : ""}>
             {group && <p className="cd-tag mb-2">{group}</p>}
-            <div className={`grid gap-2.5 sm:grid-cols-2 ${group ? "lg:grid-cols-3" : ""}`}>{opts.map(renderOption)}</div>
+            <div className="grid gap-2.5 sm:grid-cols-2">{opts.map(renderOption)}</div>
           </div>
         ))}
 
