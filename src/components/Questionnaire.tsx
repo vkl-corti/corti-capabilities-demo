@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { QUESTIONS, questionCopy, roleOf, scoreAnswers, visibleOptions, type Answers, type Option } from "../data/questionnaire";
 import { BUILD_WITH_US, PRODUCTS } from "../data/products";
 import { DetailPanel } from "./DetailPanel";
@@ -18,12 +18,18 @@ interface Props {
 export function Questionnaire({ onFreeText, onResult }: Props) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
+  const [revealed, setRevealed] = useState(false);
 
   if (step >= QUESTIONS.length) {
+    // A short matching moment before the map: the scoring itself is instant.
+    if (!revealed) return <Matching answers={answers} onDone={() => setRevealed(true)} />;
     return (
       <Result
         answers={answers}
-        onEdit={() => setStep(0)}
+        onEdit={() => {
+          setRevealed(false);
+          setStep(0);
+        }}
         onResult={onResult}
       />
     );
@@ -142,6 +148,52 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
           </button>{" "}
           and a Corti agent will find the right capability.
         </p>
+      </div>
+    </section>
+  );
+}
+
+const MATCHING_STEP_MS = 260;
+const MATCHING_HOLD_MS = 350;
+
+function Matching({ answers, onDone }: { answers: Answers; onDone: () => void }) {
+  const roleLabel = QUESTIONS[0].options.find((o) => o.id === roleOf(answers))?.label;
+  const lines = [
+    roleLabel ? `Reading your role: ${roleLabel}` : "Reading your role",
+    "Weighing your priorities and situations",
+    "Matching against the capability map",
+    "Tracing each capability to its building blocks",
+    "Preparing your capability map",
+  ];
+  const [visible, setVisible] = useState(0);
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
+
+  useEffect(() => {
+    const tick = setInterval(() => setVisible((v) => Math.min(v + 1, lines.length)), MATCHING_STEP_MS);
+    const done = setTimeout(() => onDoneRef.current(), MATCHING_STEP_MS * lines.length + MATCHING_HOLD_MS);
+    return () => {
+      clearInterval(tick);
+      clearTimeout(done);
+    };
+  }, [lines.length]);
+
+  return (
+    <section className="cd-dotted flex min-h-[calc(100vh-112px)] items-center px-8 py-16">
+      <div className="cd-card cd-fade-up mx-auto w-full max-w-lg p-6">
+        <p className="cd-eyebrow mb-3 flex items-center gap-2">
+          <span className="cd-pulse h-1.5 w-1.5 rounded-full bg-corti-accent" /> Matching
+        </p>
+        <p className="mb-5 font-sans text-[20px] font-heading leading-snug tracking-[-0.01em]">Finding the capabilities best suited to you</p>
+        <div className="space-y-1.5 border-t border-corti-border-faint pt-4 font-mono text-[12.5px]">
+          {lines.map((l, i) => (
+            <p key={l} className={`flex items-center gap-2 transition-opacity duration-200 ${i < visible ? "opacity-100" : "opacity-0"}`}>
+              <span className={i < visible - 1 ? "text-corti-accent" : "text-corti-text-tertiary"}>{i < visible - 1 ? "✓" : "›"}</span>
+              <span className="text-corti-text-secondary">{l}</span>
+              {i === visible - 1 && <span className="cd-caret h-3.5 w-[2px] bg-corti-accent" />}
+            </p>
+          ))}
+        </div>
       </div>
     </section>
   );
