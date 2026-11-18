@@ -32,8 +32,8 @@ export function TreePage({ pinned, onSelect, history, onTry, onShowAll }: Props)
     <>
       <section className="cd-rule flex flex-wrap items-end justify-between gap-6 px-8 py-7">
         <div className="cd-fade-up">
-          <p className="cd-eyebrow mb-3">Corti capability map</p>
-          <h1 className="cd-h1 mb-3 !text-[36px] xl:!text-[40px]">Explore everything Corti makes possible.</h1>
+          <p className="cd-eyebrow mb-3">Capabilities &amp; building blocks</p>
+          <h1 className="cd-h1 mb-3 !text-[36px] xl:!text-[40px]">Explore the Corti capability map.</h1>
           <p className="cd-lede max-w-[62ch]">
             From documentation to admin, every capability is composed from the same building blocks, available today or built
             together with partners. Select one to see how it is made.
