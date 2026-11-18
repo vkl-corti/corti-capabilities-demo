@@ -31,9 +31,11 @@ export function AllPage({ onOpen }: Props) {
   return (
     <div className="px-8 py-8">
       <div className="mx-auto max-w-[1040px]">
-        <p className="cd-eyebrow mb-3">All capabilities</p>
-        <h1 className={`cd-h1 ${filtered ? "mb-2" : "mb-8"}`}>Everything Corti can do</h1>
-        {filtered && <p className="mb-8 text-[14px] text-corti-text-tertiary">Showing {shown} matching capabilities</p>}
+        <p className="cd-eyebrow mb-3">Full list</p>
+        <h1 className="cd-h1 mb-2">Browse every capability</h1>
+        <p className="mb-8 text-[14px] text-corti-text-tertiary">
+          {filtered ? `Showing ${shown} matching capabilities` : "Filter by who it is for, or search for what you need."}
+        </p>
 
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-corti-border-faint pb-4">
           <p className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] text-corti-text-tertiary">
