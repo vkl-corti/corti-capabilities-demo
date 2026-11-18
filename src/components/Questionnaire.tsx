@@ -224,6 +224,14 @@ function Result({ answers, onEdit, onResult }: { answers: Answers; onEdit: () =>
   const productIds = [...new Set(matches.filter((m) => m.capability.track === "product").map((m) => m.capability.productId!))];
   const custom = matches.filter((m) => m.capability.track === "custom");
 
+  // Leads into the "Your next steps" panel, in its own words, and adapts to what was matched.
+  const nextStepsLine =
+    productIds.length && custom.length
+      ? "Start with what is available today, and explore building the rest together with us."
+      : productIds.length
+        ? "Everything here is available today, so you can get started right away."
+        : "Explore building these together with us, on the same building blocks.";
+
   return (
     <>
       <section className="cd-rule flex flex-wrap items-end justify-between gap-6 px-8 py-7">
@@ -232,10 +240,7 @@ function Result({ answers, onEdit, onResult }: { answers: Answers; onEdit: () =>
             <span className="h-1.5 w-1.5 rounded-full bg-corti-accent" /> Matched to your priorities
           </p>
           <h1 className="cd-h1 mb-3 !text-[36px] xl:!text-[40px]">Your capability map</h1>
-          <p className="cd-lede max-w-[62ch]">
-            Capabilities matched to your role and priorities. Select any capability to see what it does, what it is built from,
-            and whether you can use it today or build it with us.
-          </p>
+          <p className="cd-lede max-w-[62ch]">{nextStepsLine}</p>
         </div>
         <button type="button" className="cd-btn-ghost" onClick={onEdit}>
           Change answers
