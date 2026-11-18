@@ -240,7 +240,7 @@ function Result({ answers, onEdit, onResult }: { answers: Answers; onEdit: () =>
             <span className="h-1.5 w-1.5 rounded-full bg-corti-accent" /> Matched to your priorities
           </p>
           <h1 className="cd-h1 mb-3 !text-[36px] xl:!text-[40px]">Your capability map</h1>
-          <p className="cd-lede max-w-[62ch]">{nextStepsLine}</p>
+          <p className="cd-lede max-w-[62ch]">Capabilities matched to your role and priorities. {nextStepsLine}</p>
         </div>
         <button type="button" className="cd-btn-ghost" onClick={onEdit}>
           Change answers
