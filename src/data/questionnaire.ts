@@ -351,14 +351,20 @@ export interface Match {
 
 /** Below this a match is filler (e.g. only the broad objective), not a recommendation. */
 const MIN_SCORE = 1.5;
+/** Results: always at least MIN_RESULTS (if that many pass MIN_SCORE), at most
+ *  MAX_RESULTS; results beyond MIN_RESULTS only if at least TAIL_CUTOFF as
+ *  strong as the top match, so focused answers don't get padded. */
+const MIN_RESULTS = 5;
+const MAX_RESULTS = 8;
+const TAIL_CUTOFF = 0.4;
 
 /**
- * Ranked matches for a set of answers. Answers the current role can't see
+ * Matches for a set of answers (5–8, see MIN_RESULTS). Answers the current role can't see
  * (e.g. left over after changing role) are ignored. Results: products first,
  * then build-with-us; inside each, the objective's focus groups first, then
  * by score.
  */
-export function scoreAnswers(answers: Answers, limit = 8): Match[] {
+export function scoreAnswers(answers: Answers): Match[] {
   const role = roleOf(answers);
   const score = new Map<string, number>();
   const add = (capId: string, pts: number) => {
@@ -376,10 +382,11 @@ export function scoreAnswers(answers: Answers, limit = 8): Match[] {
     }
   }
   const focus = focusOf(answers);
-  return [...score.entries()]
-    .filter(([, s]) => s >= MIN_SCORE)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, limit)
+  const ranked = [...score.entries()].filter(([, s]) => s >= MIN_SCORE).sort((a, b) => b[1] - a[1]);
+  const top = ranked[0]?.[1] ?? 0;
+  return ranked
+    .filter(([, s], i) => i < MIN_RESULTS || s >= TAIL_CUTOFF * top)
+    .slice(0, MAX_RESULTS)
     .map(([id, s]) => ({ capability: getCapability(id)!, score: s }))
     .sort(
       (a, b) =>

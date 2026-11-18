@@ -1,5 +1,5 @@
 import { INFO_SOURCES, JOBS, PRIMITIVES, getCapability } from "../data/capabilities";
-import { ADVANCE_PROGRAM, PRODUCTS } from "../data/products";
+import { BUILD_WITH_US, PRODUCTS } from "../data/products";
 import { CAPABILITIES } from "../data/capabilities";
 import { similarity } from "../data/recommend";
 import type { Capability, ComposeResult } from "../types";
@@ -7,7 +7,7 @@ import type { Capability, ComposeResult } from "../types";
 // One capability, told in three beats:
 //   1. The capability — the problem and how it works (from Notion).
 //   2. Boiled down — the primitives it is built from and what each does here.
-//   3. Next step — product → go use it; custom → build it with us (Advance).
+//   3. Next step — product → go use it; custom → build it with us.
 
 interface Props {
   /** Present in the composer result view; absent when browsing. */
@@ -134,7 +134,7 @@ export function DetailPanel({ result, capabilityId, onSelect, onShowInMap }: Pro
   );
 }
 
-/** Custom capability → Advance program, plus the product(s) it shares blocks with as a way in today. */
+/** Custom capability → Build with us, plus the product(s) it shares blocks with as a way in today. */
 function CustomCta({ cap, onSelect }: { cap: Capability; onSelect?: (id: string) => void }) {
   const startWith = CAPABILITIES.filter((c) => c.track === "product")
     .map((c) => ({ c, s: similarity(cap, c).score }))
@@ -144,15 +144,15 @@ function CustomCta({ cap, onSelect }: { cap: Capability; onSelect?: (id: string)
     .map((x) => x.c);
   return (
     <div className="bg-[#121510] p-5">
-      <p className="cd-tag mb-2 !text-corti-accent">Build it with us · {ADVANCE_PROGRAM.name}</p>
-      <p className="mb-4 text-[14px] leading-relaxed text-corti-text-primary">{ADVANCE_PROGRAM.pitch}</p>
+      <p className="cd-tag mb-2 !text-corti-accent">{BUILD_WITH_US.name}</p>
+      <p className="mb-4 text-[14px] leading-relaxed text-corti-text-primary">{BUILD_WITH_US.pitch}</p>
       <a
-        href={`${ADVANCE_PROGRAM.href}?capability=${encodeURIComponent(cap.id)}`}
+        href={`${BUILD_WITH_US.href}?capability=${encodeURIComponent(cap.id)}`}
         target="_blank"
         rel="noreferrer"
         className="cd-btn-primary inline-flex"
       >
-        {ADVANCE_PROGRAM.cta} →
+        {BUILD_WITH_US.cta} →
       </a>
       {startWith.length > 0 && onSelect && (
         <p className="mt-4 text-[12.5px] leading-relaxed text-corti-text-tertiary">

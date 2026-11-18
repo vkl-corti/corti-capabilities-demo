@@ -6,12 +6,12 @@ import type { Product } from "../types";
 // Products: capabilities that are a Corti product today. Their CTA sends
 // the visitor straight to the product.
 // Everything else: explained, broken down into primitives, and the CTA leads
-// to the Advance program (build it with Corti, tailored to the customer).
+// to Build with us (built together with Corti, tailored to the customer).
 //
 // URLs verified on corti.ai 2026-11-16. Scribe and Dictation have no page of
 // their own yet. Both sections live on /speech-to-text. There is no chat
 // product page, so Chat points to the "user-facing assistants" section on
-// /agentic-framework. There is no Advance program page either; /contact
+// /agentic-framework. There is no Build with us page either; /contact
 // ("Talk to an AI expert") is the CTA target used across corti.ai. Swap the
 // URLs here when the dedicated pages exist.
 // ————————————————————————————————————————————————
@@ -49,8 +49,8 @@ export const PRODUCTS: Record<string, Product> = {
 
 export const PRODUCT_ORDER = ["scribe", "dictation", "coding", "chat"] as const;
 
-export const ADVANCE_PROGRAM = {
-  name: "Advance program",
+export const BUILD_WITH_US = {
+  name: "Build with us",
   pitch:
     "Not an off-the-shelf product. We build it with you on the same primitives, shaped to your workflows, systems and rules.",
   href: "https://corti.ai/contact",

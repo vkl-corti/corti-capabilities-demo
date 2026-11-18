@@ -10,7 +10,7 @@ Three pages, one taxonomy (hash routes, so it works on GitHub Pages):
 
 Every capability ends in one of two next steps:
 - **Product** (Scribe, Dictation, Coding, Chat): available today, go straight to the product.
-- **Build with us**: developed together through the **Advance program**; explained and boiled down to primitives, with a CTA to get in touch.
+- **Build with us**: developed together with Corti; explained and boiled down to primitives, with a CTA to get in touch.
 
 ## Run it
 
@@ -109,7 +109,7 @@ Where a Notion one-liner reads like an internal note (e.g. "HCP", fragments), th
 | Dictation | Medical dictation | corti.ai/speech-to-text (no dedicated page yet) |
 | Coding | Billing Assistant | corti.ai/medical-coding |
 | Chat | Medical Knowledge Assistant | corti.ai/agentic-framework (no chat page yet) |
-| Advance program | all other capabilities | corti.ai/contact?capability=<id> (no program page yet) |
+| Build with us | all other capabilities | corti.ai/contact?capability=<id> (no dedicated page yet) |
 
 ## Structuring capabilities programmatically (for design)
 

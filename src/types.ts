@@ -40,7 +40,7 @@ export type CapabilityCategory = "Clinician-facing" | "Operations" | "Patient-fa
  * Commercial path for a capability.
  * - product: a Corti product that is available today → CTA goes to the product.
  * - custom:  explained, broken down into primitives → CTA goes to the
- *            Advance program (build it with Corti, tailored to the customer).
+ *            Build with us (built together with Corti, tailored to the customer).
  */
 export type Track = "product" | "custom";
 

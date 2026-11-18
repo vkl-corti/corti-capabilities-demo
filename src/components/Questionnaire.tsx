@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { QUESTIONS, questionCopy, roleOf, scoreAnswers, visibleOptions, type Answers, type Option } from "../data/questionnaire";
-import { ADVANCE_PROGRAM, PRODUCTS } from "../data/products";
+import { BUILD_WITH_US, PRODUCTS } from "../data/products";
 import { DetailPanel } from "./DetailPanel";
 import { LibraryGraph } from "./LibraryGraph";
 
@@ -148,7 +148,7 @@ export function Questionnaire({ onFreeText, onResult }: Props) {
 }
 
 function Result({ answers, onEdit, onResult }: { answers: Answers; onEdit: () => void; onResult: (ids: string[]) => void }) {
-  const matches = useMemo(() => scoreAnswers(answers, 8), [answers]);
+  const matches = useMemo(() => scoreAnswers(answers), [answers]);
   const ids = matches.map((m) => m.capability.id);
   const idsKey = ids.join(",");
   const [selected, setSelected] = useState<string | null>(null);
@@ -236,9 +236,9 @@ function Result({ answers, onEdit, onResult }: { answers: Answers; onEdit: () =>
                 {custom.length > 0 && (
                   <div className="bg-[#121510] p-5">
                     <p className="cd-tag mb-2">Build with us · {custom.length} in your map</p>
-                    <p className="mb-4 text-[13.5px] leading-relaxed text-corti-text-primary">{ADVANCE_PROGRAM.pitch}</p>
+                    <p className="mb-4 text-[13.5px] leading-relaxed text-corti-text-primary">{BUILD_WITH_US.pitch}</p>
                     <a
-                      href={`${ADVANCE_PROGRAM.href}?capabilities=${encodeURIComponent(custom.map((m) => m.capability.id).join(","))}`}
+                      href={`${BUILD_WITH_US.href}?capabilities=${encodeURIComponent(custom.map((m) => m.capability.id).join(","))}`}
                       target="_blank"
                       rel="noreferrer"
                       className="cd-btn-ghost cd-btn-sm"

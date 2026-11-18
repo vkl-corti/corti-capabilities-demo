@@ -83,7 +83,7 @@ export function TreePage({ pinned, onSelect, history, onTry, onShowAll }: Props)
               <span className="rounded-xs border border-corti-border-tree px-1 font-mono text-[9px] uppercase text-corti-text-secondary">
                 Build with us
               </span>
-              Developed together through the Advance program
+              Developed together with you
             </span>
           </p>
         </div>
@@ -128,7 +128,7 @@ function EmptyDetail({ history, onSelect }: { history: string[]; onSelect: (id: 
             Build with us
           </span>
           <span className="text-corti-text-secondary">
-            Developed together through the Advance program, on the same building blocks and shaped to your workflows.
+            Developed together with you, on the same building blocks and shaped to your workflows.
           </span>
         </p>
       </div>
