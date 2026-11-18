@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react";
-import { CATEGORIES, CUSTOM_CAPABILITIES, JOBS, JOB_ORDER, PRIMITIVES, PRODUCT_CAPABILITIES } from "../data/capabilities";
-import { PRODUCTS } from "../data/products";
+import { CAPABILITIES, CATEGORIES, JOBS, JOB_ORDER, PRIMITIVES } from "../data/capabilities";
 import type { Capability, CapabilityCategory } from "../types";
 
-// Every capability on one calm page: products first, then the rest grouped
-// by job. Click opens the detail drawer.
+// The complete list: every capability, grouped, in priority order. Products
+// are marked inline (they lead their group). Click opens the detail drawer.
 
 interface Props {
   onOpen: (id: string) => void;
@@ -23,41 +22,34 @@ export function AllPage({ onOpen }: Props) {
           .join(" ")
           .toLowerCase()
           .includes(needle));
-    return JOB_ORDER.map((job) => ({ job, caps: CUSTOM_CAPABILITIES.filter((c) => c.job === job && match(c)) })).filter(
-      (g) => g.caps.length,
-    );
+    return JOB_ORDER.map((job) => ({ job, caps: CAPABILITIES.filter((c) => c.job === job && match(c)) })).filter((g) => g.caps.length);
   }, [q, role]);
+
+  const shown = groups.reduce((n, g) => n + g.caps.length, 0);
+  const filtered = shown !== CAPABILITIES.length;
 
   return (
     <div className="px-8 py-8">
       <div className="mx-auto max-w-[1040px]">
         <p className="cd-eyebrow mb-3">All capabilities</p>
-        <h1 className="cd-h1 mb-8">Everything Corti can do</h1>
+        <h1 className="cd-h1 mb-2">Everything Corti can do</h1>
+        <p className="mb-8 text-[14px] text-corti-text-tertiary">
+          {filtered ? `Showing ${shown} of ${CAPABILITIES.length} capabilities` : `${CAPABILITIES.length} capabilities`}
+        </p>
 
-        {/* Products */}
-        <h2 className="cd-tag mb-3 !text-corti-accent">Products · available today</h2>
-        <div className="mb-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {PRODUCT_CAPABILITIES.map((c) => {
-            const p = PRODUCTS[c.productId!];
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => onOpen(c.id)}
-                className="cd-card group flex flex-col gap-1 p-4 text-left transition-colors hover:border-corti-accent/60"
-              >
-                <span className="font-sans text-[20px] font-heading leading-tight tracking-heading group-hover:text-corti-accent">
-                  {p.name}
-                </span>
-                <span className="text-[13px] leading-snug text-corti-text-tertiary">{p.pitch}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Build with us */}
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-corti-border-faint pb-4">
-          <h2 className="cd-tag">Build with us · {CUSTOM_CAPABILITIES.length} capabilities</h2>
+          <p className="flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] text-corti-text-tertiary">
+            <span className="flex items-center gap-1.5">
+              <span className="rounded-xs border border-corti-accent/50 px-1 font-mono text-[9px] uppercase text-corti-accent">Product</span>
+              Available today
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="rounded-xs border border-corti-border-tree px-1 font-mono text-[9px] uppercase text-corti-text-secondary">
+                Build with us
+              </span>
+              Developed together with you
+            </span>
+          </p>
           <div className="flex flex-wrap items-center gap-2">
             {[null, ...CATEGORIES].map((r) => (
               <button
@@ -80,7 +72,9 @@ export function AllPage({ onOpen }: Props) {
           {groups.map(({ job, caps }) => (
             <section key={job} className="grid gap-x-8 gap-y-3 md:grid-cols-[200px_minmax(0,1fr)]">
               <div>
-                <h3 className="font-sans text-[18px] font-medium">{JOBS[job].label}</h3>
+                <h2 className="font-sans text-[18px] font-medium">
+                  {JOBS[job].label} <span className="ml-1 font-mono text-[12px] text-corti-text-tertiary">{caps.length}</span>
+                </h2>
                 <p className="text-[12.5px] leading-snug text-corti-text-tertiary">{JOBS[job].verb}</p>
               </div>
               <ul className="grid gap-x-6 sm:grid-cols-2">
@@ -92,7 +86,12 @@ export function AllPage({ onOpen }: Props) {
                       className="group flex w-full items-baseline justify-between gap-3 border-b border-corti-border-faint py-2.5 text-left"
                     >
                       <span className="min-w-0">
-                        <span className="block text-[14.5px] font-medium group-hover:text-corti-accent">{c.name}</span>
+                        <span className="flex items-center gap-2">
+                          <span className="text-[14.5px] font-medium group-hover:text-corti-accent">{c.name}</span>
+                          {c.track === "product" && (
+                            <span className="rounded-xs border border-corti-accent/50 px-1 font-mono text-[9px] uppercase text-corti-accent">Product</span>
+                          )}
+                        </span>
                         <span className="block text-[12.5px] text-corti-text-tertiary">{c.short}</span>
                       </span>
                       <span className="shrink-0 font-mono text-[12px] text-corti-text-tertiary group-hover:text-corti-accent">→</span>
