@@ -35,8 +35,8 @@ export function TreePage({ pinned, onSelect, history, onTry, onShowAll }: Props)
           <p className="cd-eyebrow mb-3">Capabilities &amp; building blocks</p>
           <h1 className="cd-h1 mb-3 !text-[36px] xl:!text-[40px]">Explore the Corti capability map.</h1>
           <p className="cd-lede max-w-[62ch]">
-            Purpose-built AI for healthcare, from the first patient contact to the final claim. Select one to see what it does,
-            how it is made, and whether it is ready today or built together with you.
+            Discover the many ways Corti can support your work, from the first patient contact to the final claim. Select one to
+            see what it does, how it is made, and whether it is ready today or built together with you.
           </p>
         </div>
         <div className="flex gap-2">
