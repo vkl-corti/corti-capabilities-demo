@@ -73,7 +73,7 @@ const NOTION_PRIMITIVE: Record<string, string> = {
 export const JOBS: Record<Job, { label: string; verb: string; flow: Flow }> = {
   document: { label: "Documentation", verb: "Consultations and dictation turned into the clinical record", flow: "import" },
   intake: { label: "Intake & data", verb: "Documents, referrals and patient input turned into structured data", flow: "import" },
-  write: { label: "Drafting", verb: "Letters, forms and patient replies drafted from the record for review", flow: "transform" },
+  write: { label: "Letters & forms", verb: "Letters, forms, summaries and patient replies prepared from the record for review", flow: "transform" },
   check: { label: "Quality & safety", verb: "Gaps, conflicts and errors identified before they reach the record or the claim", flow: "transform" },
   understand: { label: "Insight & search", verb: "Summaries and answers from the record and guidelines, with sources", flow: "transform" },
   automate: { label: "Admin & automation", verb: "Calls, inbox, scheduling, worklists and follow-ups handled end to end", flow: "act" },

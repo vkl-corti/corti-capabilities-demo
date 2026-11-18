@@ -4,7 +4,7 @@ Three pages, one taxonomy (hash routes, so it works on GitHub Pages):
 
 | Page | Route | For |
 | --- | --- | --- |
-| **Capability tree** (home) | `#/` | Capabilities (left) → the building blocks they are composed from (right). Select one to read it, see what it is built from and where it leads. Lenses: **Highlights** (top of the priority list) or one group: Documentation, Intake & data, Drafting, Quality & safety, Insight & search, Admin & automation. |
+| **Capability tree** (home) | `#/` | Capabilities (left) → the building blocks they are composed from (right). Select one to read it, see what it is built from and where it leads. Lenses: **Highlights** (top of the priority list) or one group: Documentation, Intake & data, Letters & forms, Quality & safety, Insight & search, Admin & automation. |
 | **All capabilities** | `#/all` | The complete list, all capabilities grouped, in priority order, products marked inline and leading their group. Filter by user group or search. Linked from the home page. |
 | **Match to your priorities** | `#/try` | Four short steps (role, where time is lost, situations, main objective). Options and wording adapt to the role picked in step 1: clinicians, practice teams, health-system leaders and health-tech product teams each see their own set. Ends in the visitor's own capability map (same layout as the home page) with a next-steps panel: products to start with today and the build-with-us capabilities to explore with Corti. Deterministic scoring in the browser, no LLM; questions, roles and weights in `src/data/questionnaire.ts`. Free text with the live Corti agent stays available as an alternative. |
 
